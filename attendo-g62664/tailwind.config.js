@@ -19,6 +19,13 @@ export default {
             'header': '18px',
             'button': '10px',
           },
+          fontFamily: {
+            'sans': ['Montserrat', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
+            'montserrat': ['Montserrat', 'sans-serif'],
+          },
+          fontSize: {
+            'button': ['14px', { lineHeight: '20px', fontWeight: '500' }],
+          },
         },
     },
     plugins: [],

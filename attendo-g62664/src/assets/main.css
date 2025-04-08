@@ -4,7 +4,7 @@
 
 @layer base {
   html, body, #app {
-    @apply h-full w-full m-0 p-0;
+    @apply h-full w-full m-0 p-0 font-montserrat;
   }
 
   body {

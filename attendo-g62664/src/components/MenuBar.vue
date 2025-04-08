@@ -30,31 +30,31 @@ export default {
     <ul class="flex gap-[16px] h-full">
       <li class="h-full">
         <RouterLink
-          class="flex gap-[8px] rounded-full bg-esi-blue px-4 py-2 text-white items-center justify-center w-[150px] h-full"
+          class="flex gap-[8px] rounded-full bg-esi-blue px-4 py-3 text-white items-center justify-center w-[130px] h-full"
           :to="'/'"
         >
           <Home class="w-5 h-5" />
-          <span>Accueil</span>
+          <span class="text-button">Accueil</span>
         </RouterLink>
       </li>
 
       <li class="h-full">
         <RouterLink
-          class="flex gap-[8px] rounded-full bg-esi-blue px-4 py-2 text-white items-center justify-center w-[150px] h-full"
+          class="flex gap-[8px] rounded-full bg-esi-blue px-4 py-3 text-white items-center justify-center w-[130px] h-full"
           :to="'/sessions'"
         >
           <CalendarCheck class="w-5 h-5" />
-          <span>Sessions</span>
+          <span class="text-button">Sessions</span>
         </RouterLink>
       </li>
 
       <li class="h-full">
         <RouterLink
-          class="flex gap-[8px] rounded-full bg-esi-blue px-4 py-2 text-white items-center justify-center w-[150px] h-full"
+          class="flex gap-[8px] rounded-full bg-esi-blue px-4 py-3 text-white items-center justify-center w-[130px] h-full"
           :to="'/about'"
         >
           <Info class="w-5 h-5" />
-          <span>À propos</span>
+          <span class="text-button">À propos</span>
         </RouterLink>
       </li>
     </ul>
@@ -63,7 +63,7 @@ export default {
       class="flex gap-[8px] items-center bg-box border border-border rounded-full px-4 py-2 text-text hover:bg-gray-50"
     >
       <img :src="googleIcon" alt="Google icon" class="w-5 h-5" />
-      <span>Connexion avec Google</span>
+      <span class="text-button">Connexion avec Google</span>
     </button>
   </header>
 </template>
