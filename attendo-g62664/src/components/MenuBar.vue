@@ -30,7 +30,7 @@ export default {
     <ul class="flex gap-[16px] h-full">
       <li class="h-full">
         <RouterLink
-          class="flex gap-[8px] rounded-full bg-esi-blue px-4 py-3 text-white items-center justify-center w-[130px] h-full"
+          class="flex gap-[8px] rounded-full bg-box hover:bg-esi-blue px-4 py-3 text-light-text hover:text-box items-center justify-center w-[130px] h-full"
           :to="'/'"
         >
           <Home class="w-5 h-5" />
@@ -40,7 +40,7 @@ export default {
 
       <li class="h-full">
         <RouterLink
-          class="flex gap-[8px] rounded-full bg-esi-blue px-4 py-3 text-white items-center justify-center w-[130px] h-full"
+          class="flex gap-[8px] rounded-full bg-box hover:bg-esi-blue px-4 py-3 text-light-text hover:text-box items-center justify-center w-[130px] h-full"
           :to="'/sessions'"
         >
           <CalendarCheck class="w-5 h-5" />
@@ -50,7 +50,7 @@ export default {
 
       <li class="h-full">
         <RouterLink
-          class="flex gap-[8px] rounded-full bg-esi-blue px-4 py-3 text-white items-center justify-center w-[130px] h-full"
+          class="flex gap-[8px] rounded-full bg-box hover:bg-esi-blue px-4 py-3 text-light-text hover:text-box items-center justify-center w-[130px] h-full"
           :to="'/about'"
         >
           <Info class="w-5 h-5" />
