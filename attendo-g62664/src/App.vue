@@ -3,13 +3,7 @@ import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
-    <h1 class="bg-sky-400"> Hello, Tailwindcss</h1>
-  </header>
-
-  <RouterView />
+  <div class="bg-background min-h-screen w-full flex flex-col bg-background p-[16px] flex-column gap-[16px] items-center">
+    <RouterView />
+  </div>
 </template>
-
-<style>
-@import "tailwindcss";
-</style>
