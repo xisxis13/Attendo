@@ -6,7 +6,6 @@ export const listSessionsService = {
       const { data, error } = await supabase
         .from('session')
         .select('*')
-        .order('created_at', { ascending: false });
 
       if (error) throw error;
       return data;
@@ -16,11 +15,11 @@ export const listSessionsService = {
     }
   },
 
-  async createSession(sessionData) {
+  async createSession(sessionName) {
     try {
       const { data, error } = await supabase
         .from('session')
-        .insert([sessionData]) // Exemple : { id: "...", label: "..." }
+        .insert([{ label: sessionName }])
         .select();
 
       if (error) throw error;
