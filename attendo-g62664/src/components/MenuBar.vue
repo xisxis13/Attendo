@@ -1,5 +1,6 @@
 <script>
 import logoImg from '@/assets/icons/logo.svg';
+import attendoLogo from '@/assets/icons/attendo-logo.svg';
 import googleIcon from '@/assets/icons/google-icon.svg';
 import { RouterLink } from 'vue-router';
 import { Home, CalendarCheck, Info } from 'lucide-vue-next';
@@ -14,6 +15,7 @@ export default {
   data() {
     return {
       logoImg,
+      attendoLogo,
       googleIcon,
     };
   },
@@ -22,10 +24,13 @@ export default {
 
 <template>
   <header
-    class="bg-box border border-border rounded-header px-[32px] py-[24px] w-full flex justify-between items-center"
+    class="bg-box border border-border rounded-header px-[32px] py-[16px] w-full flex justify-between items-center"
   >
 
-  <img class="h-[44px]" :src="logoImg" alt="Attendo logo" />
+  <div class="flex">
+    <img class="h-[23px]" :src="attendoLogo" alt="Attendo logo" />
+    <span class="text-logo text-esi-blue italic">ttendo</span>
+  </div>
 
     <ul class="flex gap-[16px] h-full">
       <li class="h-full">

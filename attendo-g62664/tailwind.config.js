@@ -16,7 +16,7 @@ export default {
             'light-content': '#E0E0E0',
           },
           borderRadius: {
-            'header': '18px',
+            'header': '22px',
             'button': '10px',
           },
           fontFamily: {
@@ -24,6 +24,7 @@ export default {
             'montserrat': ['Montserrat', 'sans-serif'],
           },
           fontSize: {
+            'logo': ['32px', { lineHeight: '22px', fontWeight: '800' }],
             'button': ['14px', { lineHeight: '20px', fontWeight: '500' }],
           },
         },
