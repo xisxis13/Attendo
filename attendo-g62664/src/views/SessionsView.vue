@@ -15,7 +15,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col flex-grow gap-2 p-[16px] bg-background items-center w-full h-full">
+  <div class="flex flex-col flex-grow gap-4 p-[16px] bg-background items-center w-full h-full">
     <MenuBar />
 
     <main class="flex flex-col flex-grow gap-2 p-4 bg-background items-center justify-center w-full h-full">
