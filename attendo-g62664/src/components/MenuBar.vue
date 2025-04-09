@@ -1,24 +1,24 @@
-<script>
+<script setup>
 import logoImg from '@/assets/icons/logo.svg';
 import attendoLogo from '@/assets/icons/attendo-logo.svg';
 import googleIcon from '@/assets/icons/google-icon.svg';
 import { RouterLink } from 'vue-router';
-import { Home, CalendarCheck, Info } from 'lucide-vue-next';
+import { Home, CalendarCheck, Info, LogOut } from 'lucide-vue-next';
+import { useAuthStore } from '@/stores/auth';
+import { onMounted } from 'vue';
 
-export default {
-  components: {
-    RouterLink,
-    Home,
-    CalendarCheck,
-    Info,
-  },
-  data() {
-    return {
-      logoImg,
-      attendoLogo,
-      googleIcon,
-    };
-  },
+const authStore = useAuthStore();
+
+onMounted(() => {
+  authStore.initialize();
+});
+
+const handleLogin = () => {
+  authStore.signInWithGoogle();
+};
+
+const handleLogout = () => {
+  authStore.signOut();
 };
 </script>
 
@@ -26,11 +26,10 @@ export default {
   <header
     class="bg-box border border-border rounded-header px-[32px] py-[16px] w-full flex justify-between items-center"
   >
-
-  <div class="flex">
-    <img class="h-[23px]" :src="attendoLogo" alt="Attendo logo" />
-    <span class="text-logo text-esi-blue italic">ttendo</span>
-  </div>
+    <div class="flex">
+      <img class="h-[23px]" :src="attendoLogo" alt="Attendo logo" />
+      <span class="text-h1 text-esi-blue italic">ttendo</span>
+    </div>
 
     <ul class="flex gap-[16px] h-full">
       <li class="h-full">
@@ -65,10 +64,25 @@ export default {
     </ul>
 
     <button
+      v-if="!authStore.isAuthenticated"
+      @click="handleLogin"
       class="flex gap-[8px] items-center bg-box border border-border rounded-full px-4 py-2 text-text hover:bg-gray-50"
     >
       <img :src="googleIcon" alt="Google icon" class="w-5 h-5" />
       <span class="text-button">Connexion avec Google</span>
     </button>
+
+    <div v-else class="flex items-center gap-2">
+      <div class="text-text">
+        <span class="font-medium">{{ authStore.user?.user_metadata?.name || authStore.user?.email }}</span>
+      </div>
+      <button
+        @click="handleLogout"
+        class="flex gap-[8px] items-center bg-box border border-border rounded-full px-4 py-2 text-text hover:bg-gray-50"
+      >
+        <LogOut class="w-5 h-5" />
+        <span class="text-button">Déconnexion</span>
+      </button>
+    </div>
   </header>
 </template>
