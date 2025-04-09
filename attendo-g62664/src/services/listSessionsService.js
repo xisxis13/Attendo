@@ -17,6 +17,8 @@ export const listSessionsService = {
 
   async createSession(sessionName) {
     try {
+      if (sessionName === null) return null;
+
       const { data, error } = await supabase
         .from('session')
         .insert([{ label: sessionName }])

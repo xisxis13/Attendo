@@ -27,6 +27,7 @@ export default {
             'h1': ['32px', { lineHeight: '22px', fontWeight: '800' }],
             'h2': ['24px', { lineHeight: '22px', fontWeight: '800' }],
             'input-title': ['16px', { lineHeight: '20px', fontWeight: '600' }],
+            'table-title': ['18px', { lineHeight: '20px', fontWeight: '600' }],
             'button': ['14px', { lineHeight: '17px', fontWeight: '500' }],
           },
         },
