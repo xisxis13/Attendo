@@ -9,7 +9,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'accueil',
       component: HomeView,
     },
     {
@@ -18,11 +18,17 @@ const router = createRouter({
       component: SessionsView,
       meta: {
         requiresAuth: true,
-      }
+      },
+      children: [
+        { path: '/:sessionId', name: 'sessions-details', component: SessionsView, props: true },
+        { path: '/:sessionId/:ueId', name: 'ue-details', component: SessionsView, props: true },
+        { path: '/:sessionId/:ueId/:epreuveId', name: 'epreuve-details', component: SessionsView, props: true },
+        { path: '/:sessionId/:ueId/:epreuveId/:roomId', name: 'room-details', component: SessionsView, props: true },
+      ]
     },
     {
       path: '/about',
-      name: 'about',
+      name: 'à propos',
       component: AboutView,
     },
   ],
