@@ -1,5 +1,4 @@
 <script setup>
-import logoImg from '@/assets/icons/logo.svg';
 import attendoLogo from '@/assets/icons/attendo-logo.svg';
 import googleIcon from '@/assets/icons/google-icon.svg';
 import { RouterLink } from 'vue-router';
