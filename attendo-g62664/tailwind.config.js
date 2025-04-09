@@ -26,7 +26,8 @@ export default {
           fontSize: {
             'h1': ['32px', { lineHeight: '22px', fontWeight: '800' }],
             'h2': ['24px', { lineHeight: '22px', fontWeight: '800' }],
-            'button': ['14px', { lineHeight: '20px', fontWeight: '500' }],
+            'input-title': ['16px', { lineHeight: '20px', fontWeight: '600' }],
+            'button': ['14px', { lineHeight: '17px', fontWeight: '500' }],
           },
         },
     },

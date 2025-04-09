@@ -77,10 +77,9 @@ const handleLogout = () => {
       </div>
       <button
         @click="handleLogout"
-        class="flex gap-[8px] items-center bg-box border border-border rounded-full px-4 py-2 text-text hover:bg-gray-50"
+        class="flex gap-[8px] items-center bg-box border border-border rounded-full px-2 py-2 text-text hover:bg-gray-50"
       >
         <LogOut class="w-5 h-5" />
-        <span class="text-button">Déconnexion</span>
       </button>
     </div>
   </header>
