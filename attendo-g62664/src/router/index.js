@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SessionsView from '../views/SessionsView.vue'
 import SessionDetailsView from '@/views/SessionDetailsView.vue'
+import UeDetailsView from '@/views/UeDetailsView.vue'
 import AboutView from '../views/AboutView.vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -33,7 +34,7 @@ const router = createRouter({
     {
       path: '/sessions/:sessionId/:ueId',
       name: 'ue-details',
-      component: SessionDetailsView,
+      component: UeDetailsView,
       props: true,
       meta: {
         requiresAuth: true,

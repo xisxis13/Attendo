@@ -4,6 +4,7 @@ import Breadcrumb from '@/components/Breadcrumb.vue';
 import ObjectTable from '@/components/ObjectTable.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { listSessionsService } from '@/services/listSessionsService';
 import { listUeService } from '@/services/listUeService';
 
 export default {
@@ -16,10 +17,12 @@ export default {
     const authStore = useAuthStore();
     const route = useRoute();
     const router = useRouter();
+
     return {
       authStore,
       router,
       sessionId: route.params.sessionId,
+      sessionName: null,
     };
   },
   data() {
@@ -34,6 +37,9 @@ export default {
       this.router.push({ name: 'accueil', query: { authRequired: 'true' } });
       return;
     }
+
+    const session = await listSessionsService.getSessionById(this.sessionId)
+    this.sessionName = session.label;
     this.availableUe = await listUeService.getAvailabledUe(this.sessionId);
     await this.fetchAssociatedUe();
   },
@@ -72,7 +78,7 @@ export default {
     <main class="flex flex-col flex-grow gap-8 p-4 bg-background items-start justify-left w-full h-full">
       <div class="flex flex-col gap-1">
         <h1 class="text-h1 text-text mb-4">
-          Session <span class="text-esi-blue italic">{{ sessionId || 'Chargement...' }}</span>
+          Session <span class="text-esi-blue italic">{{ sessionName || 'Chargement...' }}</span>
         </h1>
         <Breadcrumb />
       </div>

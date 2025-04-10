@@ -56,6 +56,23 @@ export const listUeService = {
     }
   },
 
+  async getSessionCompoId(ue, sessionId) {
+    try {
+      const { data, error } = await supabase
+        .from('session_compo')
+        .select('*')
+        .eq('ue', ue)
+        .eq('session', sessionId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      return data;
+    } catch (error) {
+      console.error('Error fetching session compo:', error.message);
+      return [];
+    }
+  },
+
   async fetchAssociatedUe(sessionId) {
     try {
       const { data: sessionCompos, error } = await supabase

@@ -14,6 +14,22 @@ export const listSessionsService = {
       return [];
     }
   },
+  
+  async getSessionById(sessionId) {
+    try {
+      const { data, error } = await supabase
+        .from('session')
+        .select('*')
+        .eq('id', sessionId)
+        .single();
+  
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error fetching session by ID:', error.message);
+      return null;
+    }
+  },
 
   async createSession(sessionName) {
     try {

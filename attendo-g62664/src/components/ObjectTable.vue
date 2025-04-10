@@ -33,6 +33,10 @@ export default {
       default: true,
     },
   },
+  mounted() {
+    // Debug - afficher la liste d'objets pour vérifier
+    console.log(`ObjectTable - ${this.objectType} data:`, this.objectList);
+  },
   methods: {
     async handleDelete(itemId) { 
       if (this.onDelete) {
@@ -42,10 +46,31 @@ export default {
             this.$emit('update:objectList', this.objectList.filter(item => item.id !== itemId));
           } else if (this.objectType === 'ue') {
             this.$emit('update:objectList', this.objectList.filter(item => item.ue !== itemId));
+          } else if (this.objectType === 'event') {
+            this.$emit('update:objectList', this.objectList.filter(item => item.id !== itemId));
           }
         }
       }
     },
+    // Méthode pour récupérer la valeur à afficher en fonction du type d'objet
+    getDisplayValue(item) {
+      if (this.objectType === 'event') {
+        return item.label; // Assurez-vous que les événements ont une propriété 'label'
+      } else if (this.objectType === 'ue') {
+        return item.ue;
+      } else if (this.objectType === 'session') {
+        return item.label;
+      }
+      // Fallback - essayer de trouver une propriété utilisable
+      return item.label || item.ue || item.name || item.id || 'Sans nom';
+    },
+    // Méthode pour récupérer l'ID de l'item
+    getItemId(item) {
+      if (this.objectType === 'ue') {
+        return item.ue;
+      }
+      return item.id;
+    }
   },
 };
 </script>
@@ -62,46 +87,29 @@ export default {
       </thead>
 
       <tbody>
-        <tr v-if="objectList.length === 0">
-          <td :colspan="columns.length" v-if="objectType === 'session'" class="py-4 px-5 text-center text-text">
-            Aucune session enregistrée
-          </td>
-          <td :colspan="columns.length" v-if="objectType === 'ue'" class="py-4 px-5 text-center text-text">
-            Aucune UE enregistrée
-          </td>
-          <td :colspan="columns.length" v-if="objectType === 'etu'" class="py-4 px-5 text-center text-text">
-            Aucun étudiant enregistré
+        <tr v-if="!objectList || objectList.length === 0">
+          <td :colspan="columns.length" class="py-4 px-5 text-center text-text">
+            Aucun {{ 
+              objectType === 'session' ? 'session' : 
+              objectType === 'ue' ? 'UE' : 
+              objectType === 'event' ? 'épreuve' : 'élément' 
+            }} enregistré
           </td>
         </tr>
 
         <template v-else>
-          <tr v-if="objectType === 'session'" v-for="item in objectList" :key="item.id" class="border-t border-border">
+          <tr v-for="item in objectList" :key="getItemId(item)" class="border-t border-border">
             <td class="py-2 px-5 flex items-center justify-between">
               <RouterLink 
-                :to="linkTo.replace(':id', item.id)"
+                :to="linkTo ? linkTo.replace(':id', getItemId(item)) : '#'"
                 class="text-esi-blue hover:underline"
               >
-                {{ item.label }}
+                {{ getDisplayValue(item) }}
               </RouterLink>
 
               <Trash
-                @click="handleDelete(item.id)" 
-                class="w-5 h-5 text-text cursor-pointer hover:text-red-500"
-              />
-            </td>
-          </tr>
-
-          <tr v-if="objectType === 'ue'" v-for="item in objectList" :key="item.ue" class="border-t border-border">
-            <td class="py-2 px-5 flex items-center justify-between">
-              <RouterLink 
-                :to="linkTo.replace(':id', item.ue)"
-                class="text-esi-blue hover:underline"
-              >
-                {{ item.ue }}
-              </RouterLink>
-
-              <Trash
-                @click="handleDelete(item.ue)"
+                v-if="onDelete"
+                @click="handleDelete(getItemId(item))"
                 class="w-5 h-5 text-text cursor-pointer hover:text-red-500"
               />
             </td>
