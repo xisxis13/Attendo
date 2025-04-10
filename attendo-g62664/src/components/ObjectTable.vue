@@ -8,10 +8,6 @@ export default {
     Trash,
   },
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
     objectList: {
       type: Array,
       required: true,
@@ -32,20 +28,21 @@ export default {
       required: false,
       default: null,
     },
-    isSessions: {
-      type: Boolean,
-      default: false,
+    objectType: {
+      type: String,
+      default: true,
     },
   },
   methods: {
-    getColumnValue(item, columnKey) {
-      return columnKey.split('.').reduce((obj, key) => obj?.[key], item) || 'N/A';
-    },
-    async handleDelete(itemId) {
-      if (this.onDelete && this.isSessions) {
+    async handleDelete(itemId) { 
+      if (this.onDelete) {
         const success = await this.onDelete(itemId);
         if (success) {
-          this.$emit('update:objectList', this.objectList.filter(item => item.id !== itemId));
+          if (this.objectType === 'session') {
+            this.$emit('update:objectList', this.objectList.filter(item => item.id !== itemId));
+          } else if (this.objectType === 'ue') {
+            this.$emit('update:objectList', this.objectList.filter(item => item.ue !== itemId));
+          }
         }
       }
     },
@@ -63,39 +60,53 @@ export default {
           </th>
         </tr>
       </thead>
+
       <tbody>
         <tr v-if="objectList.length === 0">
-          <td :colspan="columns.length" class="py-4 px-5 text-center text-text">
-            Aucun élément à afficher
+          <td :colspan="columns.length" v-if="objectType === 'session'" class="py-4 px-5 text-center text-text">
+            Aucune session enregistrée
+          </td>
+          <td :colspan="columns.length" v-if="objectType === 'ue'" class="py-4 px-5 text-center text-text">
+            Aucune UE enregistrée
+          </td>
+          <td :colspan="columns.length" v-if="objectType === 'etu'" class="py-4 px-5 text-center text-text">
+            Aucun étudiant enregistré
           </td>
         </tr>
-        <tr v-else v-for="item in objectList" :key="item.id" class="border-t border-border">
-          <td v-for="column in columns" :key="column.key" class="py-2 px-5">
-            <div v-if="isSessions && onDelete && column.linkable" class="flex items-center justify-between">
-              <RouterLink
-                v-if="linkTo"
+
+        <template v-else>
+          <tr v-if="objectType === 'session'" v-for="item in objectList" :key="item.id" class="border-t border-border">
+            <td class="py-2 px-5 flex items-center justify-between">
+              <RouterLink 
                 :to="linkTo.replace(':id', item.id)"
                 class="text-esi-blue hover:underline"
               >
-                {{ getColumnValue(item, column.key) }}
+                {{ item.label }}
               </RouterLink>
+
               <Trash
-                @click="handleDelete(item.id)"
+                @click="handleDelete(item.id)" 
                 class="w-5 h-5 text-text cursor-pointer hover:text-red-500"
               />
-            </div>
-            <RouterLink
-              v-else-if="linkTo && column.linkable"
-              :to="linkTo.replace(':id', item.id)"
-              class="text-esi-blue hover:underline"
-            >
-              {{ getColumnValue(item, column.key) }}
-            </RouterLink>
-            <span v-else>
-              {{ getColumnValue(item, column.key) }}
-            </span>
-          </td>
-        </tr>
+            </td>
+          </tr>
+
+          <tr v-if="objectType === 'ue'" v-for="item in objectList" :key="item.ue" class="border-t border-border">
+            <td class="py-2 px-5 flex items-center justify-between">
+              <RouterLink 
+                :to="linkTo.replace(':id', item.ue)"
+                class="text-esi-blue hover:underline"
+              >
+                {{ item.ue }}
+              </RouterLink>
+
+              <Trash
+                @click="handleDelete(item.ue)"
+                class="w-5 h-5 text-text cursor-pointer hover:text-red-500"
+              />
+            </td>
+          </tr>
+        </template>
       </tbody>
     </table>
   </div>

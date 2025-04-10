@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SessionsView from '../views/SessionsView.vue'
+import SessionDetailsView from '@/views/SessionDetailsView.vue'
 import AboutView from '../views/AboutView.vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -19,12 +20,42 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
       },
-      children: [
-        { path: '/:sessionId', name: 'sessions-details', component: SessionsView, props: true },
-        { path: '/:sessionId/:ueId', name: 'ue-details', component: SessionsView, props: true },
-        { path: '/:sessionId/:ueId/:epreuveId', name: 'epreuve-details', component: SessionsView, props: true },
-        { path: '/:sessionId/:ueId/:epreuveId/:roomId', name: 'room-details', component: SessionsView, props: true },
-      ]
+    },
+    {
+      path: '/sessions/:sessionId',
+      name: 'session-details',
+      component: SessionDetailsView,
+      props: true,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/sessions/:sessionId/:ueId',
+      name: 'ue-details',
+      component: SessionDetailsView,
+      props: true,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/sessions/:sessionId/:ueId/:epreuveId',
+      name: 'epreuve-details',
+      component: SessionDetailsView,
+      props: true,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/sessions/:sessionId/:ueId/:epreuveId/:roomId',
+      name: 'room-details',
+      component: SessionDetailsView,
+      props: true,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: '/about',

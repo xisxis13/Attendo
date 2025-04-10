@@ -76,7 +76,15 @@ export default {
         </form>
       </div>
 
-      <ObjectTable
+      <ObjectTable 
+        :object-list="sessions"
+        :columns="[{ key: 'label', label: 'Sessions', linkable: true }]"
+        link-to="/sessions/:id"
+        :on-delete="deleteSession"
+        object-type="session"
+        @update:objectList="sessions = $event"
+      />
+      <!-- <ObjectTable
         title="Sessions"
         :object-list="sessions"
         :columns="[{ key: 'label', label: 'Sessions', linkable: true }]"
@@ -84,7 +92,7 @@ export default {
         :on-delete="deleteSession"
         :is-sessions="true"
         @update:objectList="sessions = $event"
-      />
+      /> -->
     </main>
   </div>
 </template>
