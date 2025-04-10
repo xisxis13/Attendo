@@ -1,9 +1,10 @@
 <script>
-import { listSessionsService } from '@/services/listSessionsService';
 import MenuBar from '@/components/MenuBar.vue';
 import Breadcrumb from '@/components/Breadcrumb.vue';
 import ObjectTable from '@/components/ObjectTable.vue';
 import { useAuthStore } from '@/stores/auth';
+import { useSessionsStore } from '@/stores/sessions';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default {
@@ -14,37 +15,36 @@ export default {
   },
   setup() {
     const authStore = useAuthStore();
+    const sessionsStore = useSessionsStore();
     const router = useRouter();
-    return { authStore, router };
-  },
-  data() {
-    return {
-      sessions: [],
-      newSessionName: null,
+
+    const newSessionName = ref('');
+
+    onMounted(async () => {
+      if (!authStore.isAuthenticated) {
+        router.push({ name: 'accueil', query: { authRequired: 'true' } });
+        return;
+      }
+
+      await sessionsStore.fetchSessions();
+    });
+
+    const createSession = async () => {
+      if (!newSessionName.value.trim()) {
+        console.error("The session name can't be null");
+        return;
+      }
+      await sessionsStore.createSession(newSessionName.value.trim());
+      newSessionName.value = '';
     };
-  },
-  async mounted() {
-    if (!this.authStore.isAuthenticated) {
-      this.router.push({ name: 'accueil', query: { authRequired: 'true' } });
-      return;
-    }
-    this.sessions = await listSessionsService.getAllSessions();
-  },
-  methods: {
-    async createSession() {
-      const success = await listSessionsService.createSession(this.newSessionName);
-      if (success !== null) {
-        this.sessions.push(success);
-        this.newSessionName = null;
-      }
-    },
-    async deleteSession(sessionId) {
-      const success = await listSessionsService.deleteSession(sessionId);
-      if (success) {
-        this.sessions = this.sessions.filter((s) => s.id !== sessionId);
-      }
-      return success;
-    },
+
+    return {
+      authStore,
+      sessions: computed(() => sessionsStore.sessions),
+      deleteSession: sessionsStore.deleteSession,
+      newSessionName,
+      createSession,
+    };
   },
 };
 </script>
@@ -84,15 +84,6 @@ export default {
         object-type="session"
         @update:objectList="sessions = $event"
       />
-      <!-- <ObjectTable
-        title="Sessions"
-        :object-list="sessions"
-        :columns="[{ key: 'label', label: 'Sessions', linkable: true }]"
-        link-to="/sessions/:id"
-        :on-delete="deleteSession"
-        :is-sessions="true"
-        @update:objectList="sessions = $event"
-      /> -->
     </main>
   </div>
 </template>

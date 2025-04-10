@@ -4,8 +4,9 @@ import Breadcrumb from '@/components/Breadcrumb.vue';
 import ObjectTable from '@/components/ObjectTable.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import { listSessionsService } from '@/services/listSessionsService';
-import { listUeService } from '@/services/listUeService';
+import { useUeStore } from '@/stores/ue';
+import { useSessionsStore } from '@/stores/sessions';
+import { computed, onMounted } from 'vue';
 
 export default {
   components: {
@@ -15,57 +16,49 @@ export default {
   },
   setup() {
     const authStore = useAuthStore();
+    const ueStore = useUeStore();
+    const sessionsStore = useSessionsStore();
+
     const route = useRoute();
     const router = useRouter();
 
+    const sessionId = route.params.sessionId;
+
+    // Charger les données nécessaires au montage
+    onMounted(async () => {
+      if (!authStore.isAuthenticated) {
+        router.push({ name: 'accueil', query: { authRequired: 'true' } });
+        return;
+      }
+
+      // Charger les informations de la session
+      await sessionsStore.fetchSessionById(sessionId);
+
+      // Charger les UE disponibles et associées
+      await ueStore.fetchAvailableUe(sessionId);
+      await ueStore.fetchAssociatedUe(sessionId);
+    });
+
     return {
       authStore,
-      router,
-      sessionId: route.params.sessionId,
-      sessionName: null,
-    };
-  },
-  data() {
-    return {
+      ueStore,
+      sessionsStore,
+      sessionId,
+      sessionName: computed(() => sessionsStore.currentSession?.label || 'Chargement...'),
+      availableUe: computed(() => ueStore.availableUe),
+      associatedUe: computed(() => ueStore.associatedUe),
       ueSelected: null,
-      availableUe: [],
-      associatedUe: [],
     };
-  },
-  async mounted() {
-    if (!this.authStore.isAuthenticated) {
-      this.router.push({ name: 'accueil', query: { authRequired: 'true' } });
-      return;
-    }
-
-    const session = await listSessionsService.getSessionById(this.sessionId)
-    this.sessionName = session.label;
-    this.availableUe = await listUeService.getAvailabledUe(this.sessionId);
-    await this.fetchAssociatedUe();
   },
   methods: {
-    async fetchAssociatedUe() {
-      const success = await listUeService.fetchAssociatedUe(this.sessionId);
-      if (success !== null) {
-        this.associatedUe = success;
-      }
-    },
     async associateUeToSession() {
       if (!this.ueSelected) return;
 
-      const success = await listUeService.associateUeToSession(this.ueSelected.ue, this.sessionId);
-      if (success !== null) {
-        this.associatedUe.push({ ue: this.ueSelected.ue });
-        this.availableUe = this.availableUe.filter(ue => ue.ue !== this.ueSelected.ue);
-        this.ueSelected = null;
-      }
+      await this.ueStore.associateUeToSession(this.ueSelected.ue, this.sessionId);
+      this.ueSelected = null;
     },
     async deleteAssociation(ueId) {
-      const success = await listUeService.deleteAssociation(ueId, this.sessionId);
-      if (success) {
-        this.availableUe = await listUeService.getAvailabledUe(this.sessionId);
-      }
-      return success;
+      await this.ueStore.deleteAssociation(ueId, this.sessionId);
     },
   },
 };
@@ -98,7 +91,7 @@ export default {
           <button
             type="submit"
             class="bg-esi-blue text-button text-background py-2 px-3 rounded-button"
-            :disabled="!ueSelected"
+            
           >
             Ajouter
           </button>
