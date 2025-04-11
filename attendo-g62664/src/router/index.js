@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import SessionsView from '../views/SessionsView.vue'
 import SessionDetailsView from '@/views/SessionDetailsView.vue'
 import UeDetailsView from '@/views/UeDetailsView.vue'
+import EventDetailsView from '@/views/EventDetailsView.vue'
 import AboutView from '../views/AboutView.vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -41,16 +42,16 @@ const router = createRouter({
       },
     },
     {
-      path: '/sessions/:sessionId/:ueId/:epreuveId',
+      path: '/sessions/:sessionId/:ueId/:eventId',
       name: 'epreuve-details',
-      component: SessionDetailsView,
+      component: EventDetailsView,
       props: true,
       meta: {
         requiresAuth: true,
       },
     },
     {
-      path: '/sessions/:sessionId/:ueId/:epreuveId/:roomId',
+      path: '/sessions/:sessionId/:ueId/:eventId/:roomId',
       name: 'room-details',
       component: SessionDetailsView,
       props: true,

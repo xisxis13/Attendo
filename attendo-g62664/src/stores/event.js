@@ -4,6 +4,7 @@ import { listEventService } from "@/services/listEventService";
 export const useEventsStore = defineStore('events', {
   state:() => ({
     events: [],
+    currentEvent: null,
   }),
   actions: {
     async fetchEvents(ueId, sessionId) {
@@ -20,6 +21,9 @@ export const useEventsStore = defineStore('events', {
       if (success) {
         this.events = this.events.filter(event => event.id !== eventId);
       }
+    },
+    async getEventById(eventId) {
+      this.currentEvent = await listEventService.getEventById(eventId);
     },
   },
 });
