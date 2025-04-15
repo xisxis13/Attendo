@@ -24,7 +24,7 @@ export default {
             'montserrat': ['Montserrat', 'sans-serif'],
           },
           fontSize: {
-            'h1': ['32px', { lineHeight: '22px', fontWeight: '800' }],
+            'h1': ['32px', { lineHeight: '34px', fontWeight: '800' }],
             'h2': ['24px', { lineHeight: '22px', fontWeight: '800' }],
             'input-title': ['16px', { lineHeight: '20px', fontWeight: '600' }],
             'table-title': ['18px', { lineHeight: '20px', fontWeight: '600' }],

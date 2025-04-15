@@ -25,7 +25,7 @@ const handleLogout = () => {
   <header
     class="bg-box border border-border rounded-header px-[32px] py-[16px] w-full flex justify-between items-center"
   >
-    <div class="flex">
+    <div class="flex items-center">
       <img class="h-[23px]" :src="attendoLogo" alt="Attendo logo" />
       <span class="text-h1 text-esi-blue italic">ttendo</span>
     </div>
