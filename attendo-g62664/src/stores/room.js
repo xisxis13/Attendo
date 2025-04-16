@@ -11,7 +11,14 @@ export const useRoomStore = defineStore('rooms', {
       this.rooms = await listRoomService.getAllRooms();
     },
     async getRoomById(roomId) {
-      this.currentRoom = await listRoomService.getRoomById(roomId);
+      try {
+        const data = await listRoomService.getRoomById(roomId);
+        this.currentRoom = data;
+        return data;
+      } catch (error) {
+        console.error('Error fetching room by ID:', error);
+        return null;
+      }
     },
   },
 });

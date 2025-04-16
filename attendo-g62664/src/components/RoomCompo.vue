@@ -25,6 +25,11 @@ export default {
       required: true,
       validator: (eventId) => typeof eventId === 'string' && eventId.length > 0,
     },
+    linkTo: {
+      type: String,
+      required: true,
+      default: null,
+    },
   },
   setup(props, { emit }) {
     const examinationStore = useExaminationStore();
@@ -70,7 +75,7 @@ export default {
 
 <template>
   <div class="flex flex-col gap-3 p-4 w-full max-w-xs h-fit border border-border rounded-2xl bg-box">
-    <div class="flex justify-between items-center w-full">
+    <RouterLink :to="linkTo" class="flex justify-between items-center w-full">
       <span class="text-text font-bold text-xl truncate">{{ room?.label || "N/A" }}</span>
       <div class="border border-esi-blue rounded-full py-1 px-3 bg-esi-blue/10">
         <span class="text-text font-semibold text-sm">
@@ -79,7 +84,7 @@ export default {
           {{ room?.capacity || "N/A" }}
         </span> 
       </div>
-    </div>
+    </RouterLink>
     <hr class="border-light-content w-full">
     <div>
       <span class="text-text text-sm font-medium">Surveillant : <span class="text-esi-blue italic font-semibold">{{ supervisor }}</span></span>

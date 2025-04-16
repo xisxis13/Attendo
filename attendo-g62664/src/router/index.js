@@ -4,6 +4,7 @@ import SessionsView from '../views/SessionsView.vue'
 import SessionDetailsView from '@/views/SessionDetailsView.vue'
 import UeDetailsView from '@/views/UeDetailsView.vue'
 import EventDetailsView from '@/views/EventDetailsView.vue'
+import RoomDetailsView from '@/views/RoomDetailsView.vue'
 import AboutView from '../views/AboutView.vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -53,7 +54,7 @@ const router = createRouter({
     {
       path: '/sessions/:sessionId/:ueId/:eventId/:roomId',
       name: 'room-details',
-      component: SessionDetailsView,
+      component: RoomDetailsView,
       props: true,
       meta: {
         requiresAuth: true,
