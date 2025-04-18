@@ -152,9 +152,9 @@ export default {
       <ObjectTable 
         :object-list="allStudents"
         :columns="[
-          { key: 'student_id', label: 'Student ID' },
-          { key: 'lastname', label: 'Last Name' },
-          { key: 'firstname', label: 'First Name' },
+          { key: 'student_id', label: 'Matricule' },
+          { key: 'lastname', label: 'Nom' },
+          { key: 'firstname', label: 'Prénom' },
         ]"
         object-type="student"
         :on-toggle-presence="handleTogglePresence"

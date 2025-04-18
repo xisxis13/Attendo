@@ -140,7 +140,7 @@ export default {
 
       <ObjectTable 
         :object-list="events"
-        :columns="[{ key: 'label', label: 'Épreuve', linkable: true }]"
+        :columns="[{ key: 'label', label: 'Épreuves', linkable: true }]"
         :link-to="`/sessions/${sessionId}/${ueId}/:id`"
         :on-delete="deleteEvent"
         object-type="event"

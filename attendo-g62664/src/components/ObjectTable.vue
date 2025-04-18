@@ -28,7 +28,7 @@ export default {
       required: false,
       default: null,
     },
-    onTogglePresence: { // Ajout pour gérer la présence des étudiants
+    onTogglePresence: {
       type: Function,
       required: false,
       default: null,
@@ -63,7 +63,7 @@ export default {
     },
     getDisplayValue(item, columnKey) {
       if (this.objectType === 'student') {
-        return item[columnKey] || 'N/A'; // Utiliser directement la clé de la colonne
+        return item[columnKey] || 'N/A';
       } else if (this.objectType === 'event') {
         return item.label;
       } else if (this.objectType === 'ue') {
@@ -112,13 +112,21 @@ export default {
           class="border-t border-border cursor-pointer hover:bg-gray-100"
         >
           <td v-for="column in columns" :key="column.key" class="py-2 px-5">
-            <RouterLink 
-              v-if="column.linkable"
-              :to="linkTo ? linkTo.replace(':id', getItemId(item)) : '#'"
-              class="text-esi-blue hover:underline"
-            >
-              {{ getDisplayValue(item, column.key) }}
-            </RouterLink>
+            <template v-if="column.linkable">
+              <div class="flex items-center justify-between">
+                <RouterLink 
+                  :to="linkTo ? linkTo.replace(':id', getItemId(item)) : '#'"
+                  class="text-esi-blue hover:underline flex-1"
+                >
+                  {{ getDisplayValue(item, column.key) }}
+                </RouterLink>
+                <Trash
+                  v-if="onDelete"
+                  @click.stop="handleDelete(getItemId(item))"
+                  class="w-5 h-5 text-text cursor-pointer hover:text-red-500 ml-2 shrink-0"
+                />
+              </div>
+            </template>
             <span v-else>{{ getDisplayValue(item, column.key) }}</span>
           </td>
           <td v-if="objectType === 'student'" class="py-2 px-5">
@@ -129,12 +137,6 @@ export default {
             >
               {{ item.isPresent ? 'Present' : 'Absent' }}
             </button>
-          </td>
-          <td v-if="onDelete" class="py-2 px-5">
-            <Trash
-              @click="handleDelete(getItemId(item))"
-              class="w-5 h-5 text-text cursor-pointer hover:text-red-500"
-            />
           </td>
         </tr>
       </tbody>
