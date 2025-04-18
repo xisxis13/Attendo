@@ -124,7 +124,7 @@ export default {
         <form @submit.prevent="handleCreateEvent" class="flex items-center gap-2 h-fit">
           <input
             v-model="newEventLabel"
-            placeholder="e.g., Test, Exam..."
+            placeholder="ex. : bilan, examen..."
             type="text"
             name="event"
             id="newEvent"

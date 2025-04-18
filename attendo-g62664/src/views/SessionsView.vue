@@ -94,7 +94,7 @@ export default {
         <form @submit.prevent="createSession" class="flex items-center gap-2 h-fit">
           <input
             v-model="newSessionName"
-            placeholder="e.g., May-June-2025"
+            placeholder="ex. : mai-juin-2025"
             type="text"
             name="session"
             id="newSession"

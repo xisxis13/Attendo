@@ -116,7 +116,7 @@ export default {
       </div>
 
       <div class="flex flex-col gap-2">
-        <span class="text-input-title">Add a room</span>
+        <span class="text-input-title">Ajouter un local</span>
         <form @submit.prevent="handleCreateEvent" class="flex items-center gap-2 h-fit">
           <select
             v-model="roomSelected"
@@ -125,14 +125,14 @@ export default {
             class="border border-border rounded-button py-2 px-3 text-button text-text w-full max-w-sm"
             required
           >
-            <option value="" disabled>Select a room</option>
+            <option value="" disabled>Choisissez un local</option>
             <option v-for="room in rooms" :key="room.label" :value="room">{{ room.label }}</option>
           </select>
           <button
             type="submit"
             class="bg-esi-blue text-button text-white py-2 px-3 rounded-button hover:bg-esi-blue/90 transition"
           >
-            Add
+            Ajouter
           </button>
         </form>
         <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
