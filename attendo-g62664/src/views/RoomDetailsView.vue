@@ -1,25 +1,24 @@
 <script>
 import MenuBar from '@/components/MenuBar.vue';
 import Breadcrumb from '@/components/Breadcrumb.vue';
+import ObjectTable from '@/components/ObjectTable.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import { useEventsStore } from '@/stores/event';
-import { useSessionsStore } from '@/stores/sessions';
-import { useRoomStore } from '@/stores/room';
-import { useExaminationStore } from '@/stores/examination';
 import { ref, computed, onMounted } from 'vue';
+import { eventService } from '@/services/eventService';
+import { roomService } from '@/services/roomService';
+import { examinationRoomService } from '@/services/examinationRoomService';
+import { studentService } from '@/services/sudentService';
+import { teacherService } from '@/services/teacherService';
 
 export default {
   components: {
     MenuBar,
     Breadcrumb,
+    ObjectTable,
   },
   setup() {
     const authStore = useAuthStore();
-    const eventStore = useEventsStore();
-    const roomStore = useRoomStore();
-    const examinationStore = useExaminationStore();
-
     const route = useRoute();
     const router = useRouter();
 
@@ -32,6 +31,29 @@ export default {
     const currentEvent = ref(null);
     const currentExamination = ref(null);
     const availableTeachers = ref([]);
+    const allStudents = ref([]);
+    const presentStudents = ref([]);
+    const teacherSelected = ref(null);
+    const errorMessage = ref(null);
+
+    const fetchData = async () => {
+      try {
+        currentRoom.value = await roomService.getById(roomId);  
+        currentEvent.value = await eventService.getById(eventId);
+        currentExamination.value = await examinationRoomService.getByEventAndRoom(eventId, roomId);
+        availableTeachers.value = await teacherService.getAvailableSupervisors();
+        allStudents.value = await studentService.getForUe(ueId);
+        const present = await studentService.getPresentForExaminationRoom(currentExamination.value.id);
+        allStudents.value = allStudents.value.map(student => ({
+          ...student,
+          isPresent: present.some(p => p.student_id === student.student_id),
+        }));
+        errorMessage.value = null;
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
+    };
 
     onMounted(async () => {
       if (!authStore.isAuthenticated) {
@@ -39,20 +61,39 @@ export default {
         return;
       }
 
-      await roomStore.getRoomById(roomId);
-      currentRoom.value = roomStore.currentRoom;
-      await examinationStore.getAllExaminationRoomsByEvent(eventId);
-      await eventStore.getEventById(eventId);
-      currentEvent.value = eventStore.currentEvent;
-      await examinationStore.getExaminationById(eventId, roomId);
-      currentExamination.value = examinationStore.currentExamination;
-      await examinationStore.getAvailableTeacher();
-      availableTeachers.value = examinationStore.availableTeachers;
+      await fetchData();
     });
+
+    const setSupervisor = async () => {
+      if (!teacherSelected.value) {
+        errorMessage.value = "Please select a supervisor.";
+        return;
+      }
+
+      try {
+        await examinationRoomService.setSupervisor(currentExamination.value.id, teacherSelected.value.acro);
+        await fetchData();
+        teacherSelected.value = null;
+        errorMessage.value = null;
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
+    };
+
+    const handleTogglePresence = async (student) => {
+      try {
+        const newPresence = await studentService.togglePresence(student.student_id, currentExamination.value.id, eventId);
+        student.isPresent = newPresence;
+        errorMessage.value = null;
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
+    };
 
     return {
       authStore,
-      examinationStore,
       eventId,
       sessionId,
       ueId,
@@ -61,27 +102,12 @@ export default {
       currentEvent,
       currentExamination,
       availableTeachers,
-      currentTeacher: null,
-      teacherSelected: null,
+      allStudents,
+      teacherSelected,
+      setSupervisor,
+      handleTogglePresence,
+      errorMessage,
     };
-  },
-  methods: {
-    async setSupervisor() {
-      if (!this.teacherSelected) return;
-
-      try {
-        const result = await this.examinationStore.setSupervisor(this.currentExamination.id, this.teacherSelected);
-        if (result.success) {
-          this.currentExamination.supervisor = this.teacherSelected.acro;
-          this.availableTeachers = this.examinationStore.availableTeachers;
-          this.teacherSelected = null;
-        } else {
-          console.error('Failed to set supervisor:', result.error);
-        }
-      } catch (error) {
-        console.error('Error setting supervisor:', error);
-      }
-    },
   },
 };
 </script>
@@ -120,7 +146,19 @@ export default {
             Ajouter
           </button>
         </form>
+        <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
       </div>
+
+      <ObjectTable 
+        :object-list="allStudents"
+        :columns="[
+          { key: 'student_id', label: 'Student ID' },
+          { key: 'lastname', label: 'Last Name' },
+          { key: 'firstname', label: 'First Name' },
+        ]"
+        object-type="student"
+        :on-toggle-presence="handleTogglePresence"
+      />
     </main>
   </div>
 </template>

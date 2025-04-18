@@ -4,11 +4,10 @@ import Breadcrumb from '@/components/Breadcrumb.vue';
 import RoomCompo from '@/components/RoomCompo.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import { useEventsStore } from '@/stores/event';
-import { useSessionsStore } from '@/stores/sessions';
-import { useRoomStore } from '@/stores/room';
-import { useExaminationStore } from '@/stores/examination';
-import { computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { eventService } from '@/services/eventService';
+import { roomService } from '@/services/roomService';
+import { examinationRoomService } from '@/services/examinationRoomService';
 
 export default {
   components: {
@@ -18,17 +17,32 @@ export default {
   },
   setup() {
     const authStore = useAuthStore();
-    const eventStore = useEventsStore();
-    const sessionsStore = useSessionsStore();
-    const roomService = useRoomStore();
-    const examinationStore = useExaminationStore();
-
     const route = useRoute();
     const router = useRouter();
 
     const eventId = route.params.eventId;
     const sessionId = route.params.sessionId;
     const ueId = route.params.ueId;
+
+    const event = ref(null);
+    const rooms = ref([]);
+    const examinationRooms = ref([]);
+    const roomSelected = ref(null);
+    const errorMessage = ref(null);
+
+    const eventName = computed(() => event.value?.label || 'Loading...');
+
+    const fetchData = async () => {
+      try {
+        event.value = await eventService.getById(eventId);
+        rooms.value = await roomService.getAll();
+        examinationRooms.value = await examinationRoomService.getAllForEvent(eventId);
+        errorMessage.value = null;
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
+    };
 
     onMounted(async () => {
       if (!authStore.isAuthenticated) {
@@ -37,51 +51,52 @@ export default {
       }
 
       if (!eventId) {
-        console.error('Event ID is missing in route parameters');
-        router.push({ name: 'accueil' }); 
+        errorMessage.value = 'Event ID is missing in route parameters.';
+        router.push({ name: 'accueil' });
         return;
       }
 
-      await examinationStore.getAllExaminationRoomsByEvent(eventId);
-      console.log('Normalized Examination Rooms:', examinationStore.examinationRoomsByEvent);
-      await eventStore.getEventById(eventId);
-      await roomService.getAllRooms();
+      await fetchData();
     });
 
-    return {
-      authStore,
-      rooms: computed(() => roomService.rooms),
-      sessionName: computed(() => sessionsStore.currentSession?.label || 'Chargement...'),
-      eventName: computed(() => eventStore.currentEvent?.label || 'Chargement...'),
-      examinationRooms: computed(() => examinationStore.examinationRoomsByEvent),
-      createEvent: examinationStore.createExaminationRooms,
-      eventId,
-      sessionId,
-      ueId,
-      roomSelected: null,
-    };
-  },
-  methods: {
-    async handleCreateEvent() {
+    const handleCreateEvent = async () => {
       try {
-        if (!this.roomSelected) {
-          console.error("The room can't be null");
+        if (!roomSelected.value) {
+          errorMessage.value = "Please select a room.";
           return;
         }
 
-        await this.createEvent(this.eventId, this.roomSelected.label);
-        this.roomSelected = null;
+        await examinationRoomService.associateRoomToEvent(eventId, roomSelected.value.label);
+        await fetchData();
+        roomSelected.value = null;
+        errorMessage.value = null;
       } catch (error) {
-        console.log("Error creating the examination room:", error);
+        errorMessage.value = error.message;
+        console.error(error.message);
       }
-    },
-    async refreshExaminationRooms() {
-      if (!this.eventId) {
-        console.error('Cannot refresh examination rooms: Event ID is missing');
+    };
+
+    const refreshExaminationRooms = async () => {
+      if (!eventId) {
+        errorMessage.value = 'Cannot refresh examination rooms: Event ID is missing.';
         return;
       }
-      await this.examinationStore.getAllExaminationRoomsByEvent(this.eventId);
-    },
+      await fetchData();
+    };
+
+    return {
+      authStore,
+      rooms,
+      eventName,
+      examinationRooms,
+      eventId,
+      sessionId,
+      ueId,
+      roomSelected,
+      handleCreateEvent,
+      refreshExaminationRooms,
+      errorMessage,
+    };
   },
 };
 </script>
@@ -93,7 +108,7 @@ export default {
     <main class="flex flex-col gap-8 p-4 bg-background items-start justify-left w-full h-full">
       <div class="flex flex-col gap-1">
         <h1 class="text-h1 text-text mb-4">
-          Liste des locaux pour
+          List of rooms for
           <span class="text-esi-blue italic">{{ ueId }}</span>
           - <span class="text-esi-blue italic">{{ eventName }}</span>
         </h1>
@@ -101,7 +116,7 @@ export default {
       </div>
 
       <div class="flex flex-col gap-2">
-        <span class="text-input-title">Ajouter une épreuve</span>
+        <span class="text-input-title">Add a room</span>
         <form @submit.prevent="handleCreateEvent" class="flex items-center gap-2 h-fit">
           <select
             v-model="roomSelected"
@@ -110,16 +125,17 @@ export default {
             class="border border-border rounded-button py-2 px-3 text-button text-text w-full max-w-sm"
             required
           >
-            <option value="" disabled>Sélectionnez un local</option>
+            <option value="" disabled>Select a room</option>
             <option v-for="room in rooms" :key="room.label" :value="room">{{ room.label }}</option>
           </select>
           <button
             type="submit"
             class="bg-esi-blue text-button text-white py-2 px-3 rounded-button hover:bg-esi-blue/90 transition"
           >
-            Ajouter
+            Add
           </button>
         </form>
+        <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
       </div>
 
       <div class="room-list grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">

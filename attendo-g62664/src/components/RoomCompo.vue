@@ -1,6 +1,6 @@
 <script>
-import { useExaminationStore } from '@/stores/examination';
 import { ref } from 'vue';
+import { examinationRoomService } from '@/services/examinationRoomService';
 
 export default {
   props: {
@@ -32,31 +32,29 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const examinationStore = useExaminationStore();
     const isDissociating = ref(false);
+    const errorMessage = ref(null);
 
     const dissociateRoom = async () => {
-      if (!window.confirm('Voulez-vous vraiment dissocier ce local ?')) {
+      if (!window.confirm('Are you sure you want to dissociate this room?')) {
         return;
       }
 
       if (!props.room?.label || !props.eventId) {
-        console.error('Room or event ID is missing');
+        errorMessage.value = 'Room label or event ID is missing.';
+        console.error(errorMessage.value);
         return;
       }
 
       isDissociating.value = true;
       try {
-        const result = await examinationStore.dissociateRoomFromExamination(props.eventId, props.room.label);
-        // Vérifier si result est défini et a une propriété success
-        if (result && result.success) {
-          console.log(`Room ${props.room.label} successfully dissociated from event ${props.eventId}`);
-          emit('room-dissociated', props.room.label);
-        } else {
-          console.error('Failed to dissociate room:', result?.error || 'Unknown error');
-        }
+        await examinationRoomService.dissociateRoomFromEvent(props.eventId, props.room.label);
+        console.log(`Room ${props.room.label} successfully dissociated from event ${props.eventId}`);
+        emit('room-dissociated', props.room.label);
+        errorMessage.value = null;
       } catch (error) {
-        console.error('Error while dissociating room:', error);
+        errorMessage.value = error.message;
+        console.error('Error while dissociating room:', error.message);
       } finally {
         isDissociating.value = false;
       }
@@ -65,6 +63,7 @@ export default {
     return {
       dissociateRoom,
       isDissociating,
+      errorMessage,
     };
   },
   mounted() {
@@ -97,8 +96,9 @@ export default {
         :class="{ 'cursor-not-allowed opacity-70': !room?.label || isDissociating }"
         :disabled="!room?.label || isDissociating"
       >
-        {{ isDissociating ? 'Suppression...' : 'Supprimer' }}
+        {{ isDissociating ? 'Dissociation...' : 'Dissocié' }}
       </button>
+      <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
     </div>
   </div>
 </template>

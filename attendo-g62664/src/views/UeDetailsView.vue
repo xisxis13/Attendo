@@ -4,10 +4,10 @@ import Breadcrumb from '@/components/Breadcrumb.vue';
 import ObjectTable from '@/components/ObjectTable.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import { useEventsStore } from '@/stores/event';
-import { useSessionsStore } from '@/stores/sessions';
-import { computed, onMounted } from 'vue';
-import { listUeService } from '@/services/listUeService';
+import { ref, computed, onMounted } from 'vue';
+import { sessionsService } from '@/services/sessionsService';
+import { eventService } from '@/services/eventService';
+import { ueService } from '@/services/ueService';
 
 export default {
   components: {
@@ -17,14 +17,29 @@ export default {
   },
   setup() {
     const authStore = useAuthStore();
-    const eventStore = useEventsStore();
-    const sessionsStore = useSessionsStore();
-
     const route = useRoute();
     const router = useRouter();
 
     const sessionId = route.params.sessionId;
     const ueId = route.params.ueId;
+
+    const session = ref(null);
+    const events = ref([]);
+    const newEventLabel = ref(null);
+    const errorMessage = ref(null);
+
+    const sessionName = computed(() => session.value?.label || 'Chargement...');
+
+    const fetchData = async () => {
+      try {
+        session.value = await sessionsService.getById(sessionId);
+        events.value = await eventService.getAllForUeAndSession(ueId, sessionId);
+        errorMessage.value = null;
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
+    };
 
     onMounted(async () => {
       if (!authStore.isAuthenticated) {
@@ -32,47 +47,60 @@ export default {
         return;
       }
 
-      await eventStore.fetchEvents(ueId, sessionId);
-
-      await sessionsStore.fetchSessionById(sessionId);
+      await fetchData();
     });
 
-    return {
-      authStore,
-      events: computed(() => eventStore.events),
-      createEvent: eventStore.createEvent,
-      deleteEvent: eventStore.deleteEvent,
-      sessionName: computed(() => sessionsStore.currentSession?.label || 'Chargement...'),
-      sessionId,
-      ueId,
-      newEventLabel: null,
-    };
-  },
-  methods: {
-    async handleCreateEvent() {
+    const handleCreateEvent = async () => {
       try {
-        if (!this.newEventLabel || !this.newEventLabel.trim()) {
-          console.error("The event name can't be null")
+        if (!newEventLabel.value || !newEventLabel.value.trim()) {
+          errorMessage.value = 'The event can\'t be empty';
           return;
         }
 
-        const sessionCompo = await listUeService.getSessionCompoId(this.ueId, this.sessionId);
-        if (!sessionCompo || !sessionCompo.id) {
-          console.error("Impossible to find the session_compo relation");
+        const sessionCompoId = await ueService.getSessionCompoId(ueId, sessionId);
+
+        if (!sessionCompoId) {
+          errorMessage.value = 'Failed to find the session_compo relation';
           return;
         }
 
         const eventData = {
-          label: this.newEventLabel.trim(),
-          session_compo: sessionCompo.id,
+          label: newEventLabel.value.trim(),
+          session_compo: sessionCompoId,
         };
 
-        await this.createEvent(eventData);
-        this.newEventLabel = null;
+        await eventService.create(eventData);
+        await fetchData();
+        newEventLabel.value = null;
+        errorMessage.value = null;
       } catch (error) {
-        console.log("Error creating the event:", error);
+        errorMessage.value = error.message;
+        console.error(error.message);
       }
-    },
+    };
+
+    const deleteEvent = async () => {
+      try {
+        await eventService.delete(eventId);
+        await fetchData();
+        errorMessage.value = null;
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
+    };
+
+    return {
+      authStore,
+      events,
+      sessionName,
+      sessionId,
+      ueId,
+      newEventLabel,
+      handleCreateEvent,
+      deleteEvent,
+      errorMessage,
+    };
   },
 };
 </script>
@@ -96,10 +124,10 @@ export default {
         <form @submit.prevent="handleCreateEvent" class="flex items-center gap-2 h-fit">
           <input
             v-model="newEventLabel"
-            placeholder="ex. : bilan, examen..."
+            placeholder="e.g., Test, Exam..."
             type="text"
-            name="session"
-            id="newSession"
+            name="event"
+            id="newEvent"
             class="border border-border rounded-button py-2 px-3 text-button text-text"
             required
           />
@@ -107,6 +135,7 @@ export default {
             Ajouter
           </button>
         </form>
+        <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
       </div>
 
       <ObjectTable 

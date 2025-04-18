@@ -28,13 +28,17 @@ export default {
       required: false,
       default: null,
     },
+    onTogglePresence: { // Ajout pour gérer la présence des étudiants
+      type: Function,
+      required: false,
+      default: null,
+    },
     objectType: {
       type: String,
-      default: true,
+      required: true,
     },
   },
   mounted() {
-    // Debug - afficher la liste d'objets pour vérifier
     console.log(`ObjectTable - ${this.objectType} data:`, this.objectList);
   },
   methods: {
@@ -52,25 +56,31 @@ export default {
         }
       }
     },
-    // Méthode pour récupérer la valeur à afficher en fonction du type d'objet
-    getDisplayValue(item) {
-      if (this.objectType === 'event') {
-        return item.label; // Assurez-vous que les événements ont une propriété 'label'
+    async handleTogglePresence(student) {
+      if (this.onTogglePresence) {
+        await this.onTogglePresence(student);
+      }
+    },
+    getDisplayValue(item, columnKey) {
+      if (this.objectType === 'student') {
+        return item[columnKey] || 'N/A'; // Utiliser directement la clé de la colonne
+      } else if (this.objectType === 'event') {
+        return item.label;
       } else if (this.objectType === 'ue') {
         return item.ue;
       } else if (this.objectType === 'session') {
         return item.label;
       }
-      // Fallback - essayer de trouver une propriété utilisable
-      return item.label || item.ue || item.name || item.id || 'Sans nom';
+      return item.label || item.ue || item.name || item.id || 'No name';
     },
-    // Méthode pour récupérer l'ID de l'item
     getItemId(item) {
       if (this.objectType === 'ue') {
         return item.ue;
+      } else if (this.objectType === 'student') {
+        return item.student_id;
       }
       return item.id;
-    }
+    },
   },
 };
 </script>
@@ -83,38 +93,50 @@ export default {
           <th v-for="column in columns" :key="column.key" class="px-5 py-4 text-left">
             {{ column.label }}
           </th>
+          <th v-if="objectType === 'student'" class="px-5 py-4 text-left">Presence</th>
         </tr>
       </thead>
-
       <tbody>
         <tr v-if="!objectList || objectList.length === 0">
-          <td :colspan="columns.length" class="py-4 px-5 text-center text-text">
-            Aucun {{ 
+          <td :colspan="columns.length + (objectType === 'student' ? 1 : 0)" class="py-4 px-5 text-center text-text">
+            No {{ 
               objectType === 'session' ? 'session' : 
               objectType === 'ue' ? 'UE' : 
               objectType === 'event' ? 'épreuve' : 'élément' 
             }} enregistré
           </td>
         </tr>
-
-        <template v-else>
-          <tr v-for="item in objectList" :key="getItemId(item)" class="border-t border-border">
-            <td class="py-2 px-5 flex items-center justify-between">
-              <RouterLink 
-                :to="linkTo ? linkTo.replace(':id', getItemId(item)) : '#'"
-                class="text-esi-blue hover:underline"
-              >
-                {{ getDisplayValue(item) }}
-              </RouterLink>
-
-              <Trash
-                v-if="onDelete"
-                @click="handleDelete(getItemId(item))"
-                class="w-5 h-5 text-text cursor-pointer hover:text-red-500"
-              />
-            </td>
-          </tr>
-        </template>
+        <tr 
+          v-for="item in objectList" 
+          :key="getItemId(item)" 
+          class="border-t border-border cursor-pointer hover:bg-gray-100"
+        >
+          <td v-for="column in columns" :key="column.key" class="py-2 px-5">
+            <RouterLink 
+              v-if="column.linkable"
+              :to="linkTo ? linkTo.replace(':id', getItemId(item)) : '#'"
+              class="text-esi-blue hover:underline"
+            >
+              {{ getDisplayValue(item, column.key) }}
+            </RouterLink>
+            <span v-else>{{ getDisplayValue(item, column.key) }}</span>
+          </td>
+          <td v-if="objectType === 'student'" class="py-2 px-5">
+            <button
+              @click="handleTogglePresence(item)"
+              class="px-3 py-1 rounded-button"
+              :class="item.isPresent ? 'bg-green-500 text-white' : 'bg-red-500 text-white'"
+            >
+              {{ item.isPresent ? 'Present' : 'Absent' }}
+            </button>
+          </td>
+          <td v-if="onDelete" class="py-2 px-5">
+            <Trash
+              @click="handleDelete(getItemId(item))"
+              class="w-5 h-5 text-text cursor-pointer hover:text-red-500"
+            />
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>

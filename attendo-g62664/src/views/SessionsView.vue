@@ -3,9 +3,9 @@ import MenuBar from '@/components/MenuBar.vue';
 import Breadcrumb from '@/components/Breadcrumb.vue';
 import ObjectTable from '@/components/ObjectTable.vue';
 import { useAuthStore } from '@/stores/auth';
-import { useSessionsStore } from '@/stores/sessions';
-import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { ref, computed, onMounted } from 'vue';
+import { sessionsService } from '@/services/sessionsService';
 
 export default {
   components: {
@@ -15,10 +15,20 @@ export default {
   },
   setup() {
     const authStore = useAuthStore();
-    const sessionsStore = useSessionsStore();
     const router = useRouter();
 
+    const sessions = ref([]);
     const newSessionName = ref('');
+    const errorMessage = ref(null);
+
+    const fetchSessions = async () => {
+      try {
+        sessions.value = await sessionsService.getAll();
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
+    };
 
     onMounted(async () => {
       if (!authStore.isAuthenticated) {
@@ -26,24 +36,44 @@ export default {
         return;
       }
 
-      await sessionsStore.fetchSessions();
+      await fetchSessions();
     });
 
     const createSession = async () => {
       if (!newSessionName.value.trim()) {
-        console.error("The session name can't be null");
+        console.error('The session name can\'t be empty');
         return;
       }
-      await sessionsStore.createSession(newSessionName.value.trim());
-      newSessionName.value = '';
+
+      try {
+        await sessionsService.create(newSessionName.value.trim());
+        newSessionName.value = '';
+        await fetchSessions();
+        errorMessage.value = null;
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
     };
+
+    const deleteSession = async (sessionId) => {
+      try {
+        await sessionsService.delete(sessionId);
+        await fetchSessions();
+        errorMessage.value = null;
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
+    }
 
     return {
       authStore,
-      sessions: computed(() => sessionsStore.sessions),
-      deleteSession: sessionsStore.deleteSession,
+      sessions: computed(() => sessions.value),
       newSessionName,
       createSession,
+      deleteSession,
+      errorMessage,
     };
   },
 };
@@ -64,7 +94,7 @@ export default {
         <form @submit.prevent="createSession" class="flex items-center gap-2 h-fit">
           <input
             v-model="newSessionName"
-            placeholder="ex. : mai-juin-2025"
+            placeholder="e.g., May-June-2025"
             type="text"
             name="session"
             id="newSession"
@@ -74,6 +104,7 @@ export default {
             Ajouter
           </button>
         </form>
+        <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
       </div>
 
       <ObjectTable 

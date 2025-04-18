@@ -4,9 +4,9 @@ import Breadcrumb from '@/components/Breadcrumb.vue';
 import ObjectTable from '@/components/ObjectTable.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import { useUeStore } from '@/stores/ue';
-import { useSessionsStore } from '@/stores/sessions';
-import { computed, onMounted } from 'vue';
+import { ref, computed, onMounted, useId } from 'vue';
+import { sessionsService } from '@/services/sessionsService';
+import { ueService } from '@/services/ueService';
 
 export default {
   components: {
@@ -16,50 +16,76 @@ export default {
   },
   setup() {
     const authStore = useAuthStore();
-    const ueStore = useUeStore();
-    const sessionsStore = useSessionsStore();
-
     const route = useRoute();
     const router = useRouter();
 
     const sessionId = route.params.sessionId;
+    const session = ref(null);
+    const availableUe = ref([]);
+    const associatedUe = ref([]);
+    const ueSelected = ref(null);
+    const errorMessage = ref(null);
 
-    // Charger les données nécessaires au montage
+    const sessionName = computed(() => session.value?.label || 'Chargement...');
+
+    const fetchSessionDetails = async () => {
+      try {
+        session.value = await sessionsService.getById(sessionId);
+        availableUe.value = await ueService.getAvailableForSession(sessionId);
+        associatedUe.value = await ueService.getAssociatedToSession(sessionId);
+        errorMessage.value = null;
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
+    }
+
     onMounted(async () => {
       if (!authStore.isAuthenticated) {
         router.push({ name: 'accueil', query: { authRequired: 'true' } });
         return;
       }
 
-      // Charger les informations de la session
-      await sessionsStore.fetchSessionById(sessionId);
-
-      // Charger les UE disponibles et associées
-      await ueStore.fetchAvailableUe(sessionId);
-      await ueStore.fetchAssociatedUe(sessionId);
+      await fetchSessionDetails();
     });
+
+    const associateUeToSession = async () => {
+      if (!ueSelected.value) {
+        errorMessage.value = 'Veuillez choisir une UE à associer';
+        return;
+      }
+      try {
+        await ueService.associateToSession(ueSelected.value.ue, sessionId);
+        await fetchSessionDetails();
+        ueSelected.value = null;
+        errorMessage.value = null;
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
+    };
+
+    const deleteAssociation = async (ueId) => {
+      try {
+        await ueService.dissociateFromSession(ueId, sessionId);
+        errorMessage.value = null;
+      } catch (error) {
+        errorMessage.value = error.message;
+        console.error(error.message);
+      }
+    };
 
     return {
       authStore,
-      ueStore,
-      sessionsStore,
       sessionId,
-      sessionName: computed(() => sessionsStore.currentSession?.label || 'Chargement...'),
-      availableUe: computed(() => ueStore.availableUe),
-      associatedUe: computed(() => ueStore.associatedUe),
-      ueSelected: null,
+      sessionName,
+      availableUe,
+      associatedUe,
+      ueSelected,
+      associateUeToSession,
+      deleteAssociation,
+      errorMessage,
     };
-  },
-  methods: {
-    async associateUeToSession() {
-      if (!this.ueSelected) return;
-
-      await this.ueStore.associateUeToSession(this.ueSelected.ue, this.sessionId);
-      this.ueSelected = null;
-    },
-    async deleteAssociation(ueId) {
-      await this.ueStore.deleteAssociation(ueId, this.sessionId);
-    },
   },
 };
 </script>
@@ -71,7 +97,7 @@ export default {
     <main class="flex flex-col flex-grow gap-8 p-4 bg-background items-start justify-left w-full h-full">
       <div class="flex flex-col gap-1">
         <h1 class="text-h1 text-text mb-4">
-          Session <span class="text-esi-blue italic">{{ sessionName || 'Chargement...' }}</span>
+          Session <span class="text-esi-blue italic">{{ sessionName }}</span>
         </h1>
         <Breadcrumb />
       </div>
@@ -91,11 +117,11 @@ export default {
           <button
             type="submit"
             class="bg-esi-blue text-button text-background py-2 px-3 rounded-button"
-            
           >
             Ajouter
           </button>
         </form>
+        <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
       </div>
 
       <ObjectTable 
