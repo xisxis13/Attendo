@@ -34,7 +34,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/sessions/:sessionId/:ueId',
+      path: '/sessions/:sessionId/ue/:ueId',
       name: 'ue-details',
       component: UeDetailsView,
       props: true,
@@ -43,7 +43,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/sessions/:sessionId/:ueId/:eventId',
+      path: '/sessions/:sessionId/ue/:ueId/event/:eventId',
       name: 'epreuve-details',
       component: EventDetailsView,
       props: true,
@@ -52,7 +52,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/sessions/:sessionId/:ueId/:eventId/:roomId',
+      path: '/sessions/:sessionId/ue/:ueId/event/:eventId/room/:roomId',
       name: 'room-details',
       component: RoomDetailsView,
       props: true,

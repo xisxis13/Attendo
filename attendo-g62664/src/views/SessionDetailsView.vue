@@ -127,7 +127,7 @@ export default {
       <ObjectTable 
         :object-list="associatedUe"
         :columns="[{ key: 'ue', label: 'UE', linkable: true }]"
-        :link-to="`/sessions/${sessionId}/:id`"
+        :link-to="`/sessions/${sessionId}/ue/:id`"
         :on-delete="deleteAssociation"
         object-type="ue"
         @update:objectList="associatedUe = $event"
