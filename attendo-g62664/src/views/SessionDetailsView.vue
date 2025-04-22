@@ -91,25 +91,26 @@ export default {
 </script>
 
 <template>
-  <div class="flex flex-col flex-grow gap-4 p-[16px] bg-background items-center w-full h-full">
+  <div class="flex flex-col flex-grow gap-4 p-[16px] bg-background dark:bg-dark-background items-center w-full h-full">
     <MenuBar />
 
-    <main class="flex flex-col flex-grow gap-8 p-4 bg-background items-start justify-left w-full h-full">
+    <main class="flex flex-col flex-grow gap-8 p-4 bg-background dark:bg-dark-background items-start justify-left w-full h-full">
       <div class="flex flex-col gap-1">
-        <h1 class="text-h1 text-text mb-4">
+        <h1 class="text-h1 text-text dark:text-dark-text mb-4">
           Session <span class="text-esi-blue italic">{{ sessionName }}</span>
         </h1>
         <Breadcrumb />
       </div>
 
       <div class="flex flex-col gap-2">
-        <span class="text-input-title">Ajouter une UE dans la session</span>
+        <span class="text-input-title text-text dark:text-dark-text">Ajouter une UE dans la session</span>
         <form @submit.prevent="associateUeToSession" class="flex items-center gap-2 h-fit">
           <select
             v-model="ueSelected"
             name="ue"
             id="ueSelected"
-            class="border border-border rounded-button py-2 px-3 text-button text-text"
+            class="border border-border dark:border-dark-border bg-box dark:bg-dark-box rounded-button py-2 px-3 text-button text-text dark:text-dark-text"
+            required
           >
             <option value="" disabled>Sélectionnez une UE</option>
             <option v-for="ue in availableUe" :key="ue.ue" :value="ue">{{ ue.ue }}</option>

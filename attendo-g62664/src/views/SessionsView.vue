@@ -80,17 +80,17 @@ export default {
 </script>
 
 <template>
-  <div class="flex flex-col flex-grow gap-4 p-[16px] bg-background items-center w-full h-full">
+  <div class="flex flex-col flex-grow gap-4 p-[16px] bg-background dark:bg-dark-background items-center w-full h-full">
     <MenuBar />
 
-    <main class="flex flex-col flex-grow gap-8 p-4 bg-background items-start justify-left w-full h-full">
+    <main class="flex flex-col flex-grow gap-8 p-4 bg-background dark:bg-dark-background items-start justify-left w-full h-full">
       <div class="flex flex-col gap-1">
-        <h1 class="text-h1 text-text mb-4">Sessions</h1>
+        <h1 class="text-h1 text-text dark:text-dark-text mb-4">Sessions</h1>
         <Breadcrumb />
       </div>
 
       <div class="flex flex-col gap-2">
-        <span class="text-input-title">Ajouter une session</span>
+        <span class="text-input-title text-text dark:text-dark-text">Ajouter une session</span>
         <form @submit.prevent="createSession" class="flex items-center gap-2 h-fit">
           <input
             v-model="newSessionName"
@@ -98,9 +98,10 @@ export default {
             type="text"
             name="session"
             id="newSession"
-            class="border border-border rounded-button py-2 px-3 text-button text-text"
+            class="border border-border dark:border-dark-border bg-box dark:bg-dark-box rounded-button py-2 px-3 text-button text-text dark:text-dark-text"
+            required
           />
-          <button type="submit" class="bg-esi-blue text-button text-background py-2 px-3 rounded-button">
+          <button type="submit" class="bg-esi-blue hover:bg-opacity-90 dark:hover:bg-opacity-90 text-button text-background py-2 px-3 rounded-button">
             Ajouter
           </button>
         </form>

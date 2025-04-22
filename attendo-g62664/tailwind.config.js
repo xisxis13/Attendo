@@ -1,5 +1,5 @@
 export default {
-    darkMode: 'selector',
+    darkMode: 'class',
     content: [
         "./index.html",
         "./src/**/*.{vue,js,ts,jsx,tsx}",
@@ -14,6 +14,14 @@ export default {
             'light-text': '#9E9E9E',
             'esi-blue' : '#52A2D0',
             'light-content': '#E0E0E0',
+
+            'dark-background': '#1E2A34',
+            'dark-box': '#25303D',
+            'dark-border': '#295A6A',
+            'dark-text': '#E8F0F6',
+            'dark-light-text': '#A6C0C9',
+            'dark-esi-blue' : '#52A2D0',
+            'dark-light-content': '#404C54',
           },
           borderRadius: {
             'header': '22px',

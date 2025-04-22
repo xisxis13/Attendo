@@ -106,12 +106,12 @@ export default {
 </script>
 
 <template>
-  <div class="flex flex-col flex-grow gap-4 p-[16px] bg-background items-center w-full h-full">
+  <div class="flex flex-col flex-grow gap-4 p-[16px] bg-background dark:bg-dark-background items-center w-full h-full">
     <MenuBar />
 
-    <main class="flex flex-col flex-grow gap-8 p-4 bg-background items-start justify-left w-full h-full">
+    <main class="flex flex-col flex-grow gap-8 p-4 bg-background dark:bg-dark-background items-start justify-left w-full h-full">
       <div class="flex flex-col gap-1">
-        <h1 class="text-h1 text-text mb-4">
+        <h1 class="text-h1 text-text dark:text-dark-text mb-4">
           Liste des épreuves de 
           <span class="text-esi-blue italic">{{ ueId || 'Chargement...' }}</span>
           (session : <span class="text-esi-blue italic">{{ sessionName }}</span>)
@@ -120,7 +120,7 @@ export default {
       </div>
 
       <div class="flex flex-col gap-2">
-        <span class="text-input-title">Ajouter une épreuve</span>
+        <span class="text-input-title text-text dark:text-dark-text">Ajouter une épreuve</span>
         <form @submit.prevent="handleCreateEvent" class="flex items-center gap-2 h-fit">
           <input
             v-model="newEventLabel"
@@ -128,7 +128,7 @@ export default {
             type="text"
             name="event"
             id="newEvent"
-            class="border border-border rounded-button py-2 px-3 text-button text-text"
+            class="border border-border dark:border-dark-border bg-box dark:bg-dark-box rounded-button py-2 px-3 text-button text-text dark:text-dark-text"
             required
           />
           <button type="submit" class="bg-esi-blue text-button text-background py-2 px-3 rounded-button">

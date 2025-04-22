@@ -73,22 +73,22 @@ export default {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 p-4 w-full max-w-xs h-fit border border-border rounded-2xl bg-box">
+  <div class="flex flex-col gap-3 p-4 w-full max-w-xs h-fit border border-border dark:border-dark-border rounded-2xl bg-box dark:bg-dark-box">
     <RouterLink :to="linkTo" class="flex justify-between items-center w-full">
-      <span class="text-text font-bold text-xl truncate">{{ room?.label || "N/A" }}</span>
+      <span class="text-text dark:text-dark-text font-bold text-xl truncate">{{ room?.label || "N/A" }}</span>
       <div class="border border-esi-blue rounded-full py-1 px-3 bg-esi-blue/10">
-        <span class="text-text font-semibold text-sm">
+        <span class="text-text dark:text-dark-text font-semibold text-sm">
           <span class="text-esi-blue italic">{{ room?.capacity || "N/A" }}</span>
           / 
           {{ room?.capacity || "N/A" }}
         </span> 
       </div>
     </RouterLink>
-    <hr class="border-light-content w-full">
+    <hr class="border-light-content dark:border-dark-light-content w-full">
     <div>
-      <span class="text-text text-sm font-medium">Surveillant : <span class="text-esi-blue italic font-semibold">{{ supervisor }}</span></span>
+      <span class="text-text dark:text-dark-text text-sm font-medium">Surveillant : <span class="text-esi-blue italic font-semibold">{{ supervisor }}</span></span>
     </div>
-    <hr class="border-light-content w-full">
+    <hr class="border-light-content dark:border-dark-light-content w-full">
     <div class="flex flex-col gap-2">
       <button 
         class="bg-red-600 text-button text-white py-2 px-3 rounded-button hover:bg-red-700 transition"

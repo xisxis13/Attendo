@@ -102,12 +102,12 @@ export default {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-4 bg-background items-center w-full h-full">
+  <div class="flex flex-col gap-4 p-4 bg-background dark:bg-dark-background items-center w-full h-full">
     <MenuBar />
 
-    <main class="flex flex-col gap-8 p-4 bg-background items-start justify-left w-full h-full">
+    <main class="flex flex-col gap-8 p-4 bg-background dark:bg-dark-background items-start justify-left w-full h-full">
       <div class="flex flex-col gap-1">
-        <h1 class="text-h1 text-text mb-4">
+        <h1 class="text-h1 text-text dark:text-dark-text mb-4">
           List of rooms for
           <span class="text-esi-blue italic">{{ ueId }}</span>
           - <span class="text-esi-blue italic">{{ eventName }}</span>
@@ -116,22 +116,19 @@ export default {
       </div>
 
       <div class="flex flex-col gap-2">
-        <span class="text-input-title">Ajouter un local</span>
+        <span class="text-input-title text-text dark:text-dark-text">Ajouter un local</span>
         <form @submit.prevent="handleCreateEvent" class="flex items-center gap-2 h-fit">
           <select
             v-model="roomSelected"
             name="room"
             id="roomSelected"
-            class="border border-border rounded-button py-2 px-3 text-button text-text w-full max-w-sm"
+            class="border border-border dark:border-dark-border bg-box dark:bg-dark-box rounded-button py-2 px-3 text-button text-text dark:text-dark-text"
             required
           >
             <option value="" disabled>Choisissez un local</option>
             <option v-for="room in rooms" :key="room.label" :value="room">{{ room.label }}</option>
           </select>
-          <button
-            type="submit"
-            class="bg-esi-blue text-button text-white py-2 px-3 rounded-button hover:bg-esi-blue/90 transition"
-          >
+          <button type="submit" class="bg-esi-blue hover:bg-opacity-90 dark:hover:bg-opacity-90 text-button text-background py-2 px-3 rounded-button">
             Ajouter
           </button>
         </form>

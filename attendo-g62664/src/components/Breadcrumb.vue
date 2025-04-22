@@ -23,8 +23,6 @@ export default {
         { path: '/sessions', label: 'Sessions', },
       );
 
-      // /sessions/:sessionId/ue/:ueId/event/:eventId/room/:roomId
-
       if (route.params.sessionId) {
         const session = await sessionsService.getById(route.params.sessionId);
 
@@ -80,17 +78,17 @@ export default {
 </script>
 
 <template>
-  <div class="w-full flex items-center text-light-text">
+  <div class="w-full flex items-center text-light-text dark:text-dark-light-text">
     <div class="flex items-center gap-2">
       <template v-for="(segment, index) in breadcrumbSegments" :key="segment.path">
         <router-link
           v-if="index < breadcrumbSegments.length - 1"
           :to="segment.path"
-          class="hover:text-esi-blue transition-colors"
+          class="hover:text-esi-blue dark:hover:text-esi-blue transition-colors"
         >
           {{ segment.label }}
         </router-link>
-        <span v-else class="font-medium text-text">{{ segment.label }}</span>
+        <span v-else class="font-medium text-text dark:text-dark-text">{{ segment.label }}</span>
 
         <ChevronRight v-if="index < breadcrumbSegments.length - 1" class="w-4 h-4" />
       </template>

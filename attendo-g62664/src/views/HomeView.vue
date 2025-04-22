@@ -24,17 +24,17 @@ const welcomeMessage = () => {
 </script>
 
 <template>
-  <div class="flex flex-col flex-grow gap-4 p-[16px] bg-background items-center justify-center w-full h-full">
+  <div class="flex flex-col flex-grow gap-4 p-[16px] bg-background dark:bg-dark-background items-center justify-center w-full h-full">
     <MenuBar />
 
-    <main class="flex flex-col flex-grow gap-2 p-4 bg-background items-center justify-center w-full h-full">
+    <main class="flex flex-col flex-grow gap-2 p-4 bg-background dark:bg-dark-background items-center justify-center w-full h-full">
       <template v-if="!authStore.isAuthenticated">
-        <h1 class="text-h1 text-text mb-4">Bienvenue sur <span class="text-h1 text-esi-blue italic">Attendo</span></h1>
-        <p class="text-text mb-6">Veuillez vous connecter pour accéder à plus de contenu !</p>
+        <h1 class="text-h1 text-text dark:text-dark-text mb-4">Bienvenue sur <span class="text-h1 text-esi-blue italic">Attendo</span></h1>
+        <p class="text-text dark:text-dark-text mb-6">Veuillez vous connecter pour accéder à plus de contenu !</p>
       </template>
   
       <template v-else>
-        <h1 class="text-h1 text-text mb-4">{{ welcomeMessage() }}, <span class="text-h1 text-esi-blue italic">{{ authStore.user?.user_metadata?.name || authStore.user?.email }}</span> !</h1>
+        <h1 class="text-h1 text-text dark:text-dark-text mb-4">{{ welcomeMessage() }}, <span class="text-h1 text-esi-blue italic">{{ authStore.user?.user_metadata?.name || authStore.user?.email }}</span> !</h1>
       </template>
     </main>
   </div>

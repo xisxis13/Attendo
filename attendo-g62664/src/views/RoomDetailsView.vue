@@ -113,12 +113,12 @@ export default {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-4 bg-background items-center w-full h-full">
+  <div class="flex flex-col gap-4 p-4 bg-background dark:bg-dark-background items-center w-full h-full">
     <MenuBar />
 
-    <main class="flex flex-col gap-8 p-4 bg-background items-start justify-left w-full h-full">
+    <main class="flex flex-col gap-8 p-4 bg-background dark:bg-dark-background items-start justify-left w-full h-full">
       <div class="flex flex-col gap-1">
-        <h1 class="text-h1 text-text mb-4">
+        <h1 class="text-h1 text-text dark:text-dark-text mb-4">
           Prise de présence du local 
           <span class="text-esi-blue italic">{{ currentExamination?.room?.label || 'Chargement...' }}</span>
           <span v-if="currentExamination?.supervisor"> par <span class="text-esi-blue italic">{{ currentExamination?.supervisor?.acro || currentExamination?.supervisor || 'N/A' }}</span></span>
@@ -127,13 +127,13 @@ export default {
       </div>
 
       <div class="flex flex-col gap-2">
-        <span class="text-input-title">Définir un surveillant</span>
+        <span class="text-input-title text-text dark:text-dark-text">Définir un surveillant</span>
         <form @submit.prevent="setSupervisor" class="flex items-center gap-2 h-fit">
           <select
             v-model="teacherSelected"
             name="teacher"
             id="teacherSelected"
-            class="border border-border rounded-button py-2 px-3 text-button text-text w-full max-w-sm"
+            class="border border-border dark:border-dark-border bg-box dark:bg-dark-box rounded-button py-2 px-3 text-button text-text dark:text-dark-text"
             required
           >
             <option value="" disabled>Sélectionnez un surveillant</option>
