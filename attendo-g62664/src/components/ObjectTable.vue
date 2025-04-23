@@ -133,9 +133,9 @@ export default {
             <button
               @click="handleTogglePresence(item)"
               class="px-3 py-1 rounded-button"
-              :class="item.isPresent ? 'bg-green-500 text-whit' : 'bg-red-500 text-white'"
+              :class="item.isPresent ? 'bg-green-500 text-white' : 'bg-red-500 text-white'"
             >
-              {{ item.isPresent ? 'Present' : 'Absent' }}
+              {{ item.isPresent ? 'Present(e)' : 'Absent(e)' }}
             </button>
           </td>
         </tr>
