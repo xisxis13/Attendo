@@ -146,6 +146,7 @@ export default {
           :supervisor="examination?.supervisor?.acro"
           :eventId="eventId"
           :link-to="`/sessions/${sessionId}/ue/${ueId}/event/${eventId}/room/${examination?.room?.label}`"
+          :examinationRoomId="examination?.id"
           @room-dissociated="refreshExaminationRooms"
         />
       </div>

@@ -1,5 +1,5 @@
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { examinationRoomService } from '@/services/examinationRoomService';
 
 export default {
@@ -30,10 +30,30 @@ export default {
       required: true,
       default: null,
     },
+    examinationRoomId: {
+      type: [String, Number],
+      required: true,
+      validator: (id) => id !== null && id !== undefined,
+    },
   },
   setup(props, { emit }) {
     const isDissociating = ref(false);
     const errorMessage = ref(null);
+    const presenceCount = ref(0);
+
+    const fetchPresenceCount = async () => {
+      try {
+        presenceCount.value = await examinationRoomService.getPresenceCountForRoom(props.examinationRoomId);
+      } catch (error) {
+        console.error('Error fetching presence count:', error.message);
+        presenceCount.value = 0;
+      }
+    };
+
+    onMounted(() => {
+      fetchPresenceCount();
+      console.log('Room received in RoomCompo:', props.room);
+    });
 
     const dissociateRoom = async () => {
       if (!window.confirm('Are you sure you want to dissociate this room?')) {
@@ -64,10 +84,8 @@ export default {
       dissociateRoom,
       isDissociating,
       errorMessage,
+      presenceCount,
     };
-  },
-  mounted() {
-    console.log('Room received in RoomCompo:', this.room);
   },
 };
 </script>
@@ -78,7 +96,7 @@ export default {
       <span class="text-text dark:text-dark-text font-bold text-xl truncate">{{ room?.label || "N/A" }}</span>
       <div class="border border-esi-blue rounded-full py-1 px-3 bg-esi-blue/10">
         <span class="text-text dark:text-dark-text font-semibold text-sm">
-          <span class="text-esi-blue italic">{{ room?.capacity || "N/A" }}</span>
+          <span class="text-esi-blue italic">{{ presenceCount }}</span>
           / 
           {{ room?.capacity || "N/A" }}
         </span> 
