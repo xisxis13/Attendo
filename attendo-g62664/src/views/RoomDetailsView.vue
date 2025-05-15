@@ -1,6 +1,6 @@
 <script>
 import MenuBar from '@/components/MenuBar.vue';
-import Breadcrumb from '@/components/Breadcrumb.vue';
+import Breadcrumb from '@/components/BreadCrumb.vue';
 import ObjectTable from '@/components/ObjectTable.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
@@ -38,7 +38,7 @@ export default {
 
     const fetchData = async () => {
       try {
-        currentRoom.value = await roomService.getById(roomId);  
+        currentRoom.value = await roomService.getById(roomId);
         currentEvent.value = await eventService.getById(eventId);
         currentExamination.value = await examinationRoomService.getByEventAndRoom(eventId, roomId);
         availableTeachers.value = await teacherService.getAvailableSupervisors();
@@ -119,7 +119,7 @@ export default {
     <main class="flex flex-col gap-8 p-4 bg-background dark:bg-dark-background items-start justify-left w-full h-full">
       <div class="flex flex-col gap-1">
         <h1 class="text-h1 text-text dark:text-dark-text mb-4">
-          Prise de présence du local 
+          Prise de présence du local
           <span class="text-esi-blue italic">{{ currentExamination?.room?.label || 'Chargement...' }}</span>
           <span v-if="currentExamination?.supervisor"> par <span class="text-esi-blue italic">{{ currentExamination?.supervisor?.acro || currentExamination?.supervisor || 'N/A' }}</span></span>
         </h1>
@@ -149,7 +149,7 @@ export default {
         <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
       </div>
 
-      <ObjectTable 
+      <ObjectTable
         :object-list="allStudents"
         :columns="[
           { key: 'student_id', label: 'Matricule' },

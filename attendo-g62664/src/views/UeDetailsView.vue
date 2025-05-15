@@ -1,6 +1,6 @@
 <script>
 import MenuBar from '@/components/MenuBar.vue';
-import Breadcrumb from '@/components/Breadcrumb.vue';
+import Breadcrumb from '@/components/BreadCrumb.vue';
 import ObjectTable from '@/components/ObjectTable.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
@@ -112,7 +112,7 @@ export default {
     <main class="flex flex-col flex-grow gap-8 p-4 bg-background dark:bg-dark-background items-start justify-left w-full h-full">
       <div class="flex flex-col gap-1">
         <h1 class="text-h1 text-text dark:text-dark-text mb-4">
-          Liste des épreuves de 
+          Liste des épreuves de
           <span class="text-esi-blue italic">{{ ueId || 'Chargement...' }}</span>
           (session : <span class="text-esi-blue italic">{{ sessionName }}</span>)
         </h1>
@@ -138,7 +138,7 @@ export default {
         <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
       </div>
 
-      <ObjectTable 
+      <ObjectTable
         :object-list="events"
         :columns="[{ key: 'label', label: 'Épreuves', linkable: true }]"
         :link-to="`/sessions/${sessionId}/ue/${ueId}/event/:id`"

@@ -1,6 +1,6 @@
 <script>
 import MenuBar from '@/components/MenuBar.vue';
-import Breadcrumb from '@/components/Breadcrumb.vue';
+import Breadcrumb from '@/components/BreadCrumb.vue';
 import ObjectTable from '@/components/ObjectTable.vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
@@ -108,7 +108,7 @@ export default {
         <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
       </div>
 
-      <ObjectTable 
+      <ObjectTable
         :object-list="sessions"
         :columns="[{ key: 'label', label: 'Sessions', linkable: true }]"
         link-to="/sessions/:id"

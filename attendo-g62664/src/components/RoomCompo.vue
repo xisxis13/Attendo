@@ -97,9 +97,9 @@ export default {
       <div class="border border-esi-blue rounded-full py-1 px-3 bg-esi-blue/10">
         <span class="text-text dark:text-dark-text font-semibold text-sm">
           <span class="text-esi-blue italic">{{ presenceCount }}</span>
-          / 
+          /
           {{ room?.capacity || "N/A" }}
-        </span> 
+        </span>
       </div>
     </RouterLink>
     <hr class="border-light-content dark:border-dark-light-content w-full">
@@ -108,13 +108,13 @@ export default {
     </div>
     <hr class="border-light-content dark:border-dark-light-content w-full">
     <div class="flex flex-col gap-2">
-      <button 
+      <button
         class="bg-red-600 text-button text-white py-2 px-3 rounded-button hover:bg-red-700 transition"
         @click="dissociateRoom"
         :class="{ 'cursor-not-allowed opacity-70': !room?.label || isDissociating }"
         :disabled="!room?.label || isDissociating"
       >
-        {{ isDissociating ? 'Dissociation...' : 'Dissocié' }}
+        {{ isDissociating ? 'Dissociation...' : 'Dissocier' }}
       </button>
       <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
     </div>

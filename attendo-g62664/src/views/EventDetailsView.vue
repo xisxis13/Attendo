@@ -1,6 +1,6 @@
 <script>
 import MenuBar from '@/components/MenuBar.vue';
-import Breadcrumb from '@/components/Breadcrumb.vue';
+import Breadcrumb from '@/components/BreadCrumb.vue';
 import RoomCompo from '@/components/RoomCompo.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';

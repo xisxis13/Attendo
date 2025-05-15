@@ -119,14 +119,14 @@ export const examinationRoomService = {
         console.error('Examination room ID is missing');
         return 0;
       }
-  
+
       const { count, error } = await supabase
         .from('examination')
         .select('*', { count: 'exact', head: true })
         .eq('examination_room', examinationRoomId);
-  
+
       if (error) throw error;
-  
+
       return count || 0;
     } catch (error) {
       console.error('Error fetching presence count:', error.message);

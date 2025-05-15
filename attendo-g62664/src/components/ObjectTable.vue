@@ -1,11 +1,11 @@
 <script>
 import { RouterLink } from 'vue-router';
-import { Trash } from 'lucide-vue-next';
+import { Trash2 } from 'lucide-vue-next';
 
 export default {
   components: {
     RouterLink,
-    Trash,
+    Trash2,
   },
   props: {
     objectList: {
@@ -42,7 +42,7 @@ export default {
     console.log(`ObjectTable - ${this.objectType} data:`, this.objectList);
   },
   methods: {
-    async handleDelete(itemId) { 
+    async handleDelete(itemId) {
       if (this.onDelete) {
         const success = await this.onDelete(itemId);
         if (success) {
@@ -99,28 +99,28 @@ export default {
       <tbody>
         <tr v-if="!objectList || objectList.length === 0">
           <td :colspan="columns.length + (objectType === 'student' ? 1 : 0)" class="py-4 px-5 text-center text-text dark:text-dark-text">
-            Aucune {{ 
-              objectType === 'session' ? 'session' : 
-              objectType === 'ue' ? 'UE' : 
-              objectType === 'event' ? 'épreuve' : 'élément' 
+            Aucune {{
+              objectType === 'session' ? 'session' :
+              objectType === 'ue' ? 'UE' :
+              objectType === 'event' ? 'épreuve' : 'élément'
             }} enregistrée
           </td>
         </tr>
-        <tr 
-          v-for="item in objectList" 
-          :key="getItemId(item)" 
+        <tr
+          v-for="item in objectList"
+          :key="getItemId(item)"
           class="border-t border-border dark:border-dark-border cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
         >
           <td v-for="column in columns" :key="column.key" class="py-2 px-5">
             <template v-if="column.linkable">
               <div class="flex items-center justify-between">
-                <RouterLink 
+                <RouterLink
                   :to="linkTo ? linkTo.replace(':id', getItemId(item)) : '#'"
                   class="text-esi-blue dark:text-esi-blue hover:underline flex-1"
                 >
                   {{ getDisplayValue(item, column.key) }}
                 </RouterLink>
-                <Trash
+                <Trash2
                   v-if="onDelete"
                   @click.stop="handleDelete(getItemId(item))"
                   class="w-5 h-5 text-text dark:text-dark-text cursor-pointer hover:text-red-500 dark:hover:text-red-500 ml-2 shrink-0"
