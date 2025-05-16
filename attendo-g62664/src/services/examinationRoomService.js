@@ -1,6 +1,14 @@
 import { supabase } from "./supabase";
 
+/**
+ * Service de gestion des salles d'examen
+ */
 export const examinationRoomService = {
+  /**
+   * Récupère toutes les salles d'examen pour une épreuve
+   * @param {string} eventId - Identifiant de l'épreuve
+   * @returns {Promise<Array>} Liste des salles avec leurs détails
+   */
   async getAllForEvent(eventId) {
     try {
       if (!eventId) throw new Error("Event ID is required.");
@@ -21,6 +29,12 @@ export const examinationRoomService = {
     }
   },
 
+  /**
+   * Récupère une salle d'examen spécifique pour une épreuve
+   * @param {string} eventId - Identifiant de l'épreuve
+   * @param {string} roomId - Identifiant de la salle
+   * @returns {Promise<Object>} Détails de la salle
+   */
   async getByEventAndRoom(eventId, roomId) {
     try {
       if (!eventId || !roomId) throw new Error("Event ID and Room ID are required.");
@@ -43,6 +57,11 @@ export const examinationRoomService = {
     }
   },
 
+  /**
+   * Récupère les salles disponibles pour une épreuve
+   * @param {string} eventId - Identifiant de l'épreuve
+   * @returns {Promise<Array>} Liste des salles disponibles
+   */
   async getAvailableRoomsForEvent(eventId) {
     try {
       if (!eventId) throw new Error("Event ID is required.");
@@ -66,6 +85,12 @@ export const examinationRoomService = {
     }
   },
 
+  /**
+   * Associe une salle à une épreuve
+   * @param {string} eventId - Identifiant de l'épreuve
+   * @param {string} roomId - Identifiant de la salle
+   * @returns {Promise<Object>} Association créée
+   */
   async associateRoomToEvent(eventId, roomId) {
     try {
       if (!eventId || !roomId) throw new Error("Event ID and Room ID are required.");
@@ -81,6 +106,12 @@ export const examinationRoomService = {
     }
   },
 
+  /**
+   * Dissocie une salle d'une épreuve
+   * @param {string} eventId - Identifiant de l'épreuve
+   * @param {string} roomId - Identifiant de la salle
+   * @returns {Promise<boolean>} true si la dissociation a réussi
+   */
   async dissociateRoomFromEvent(eventId, roomId) {
     try {
       if (!eventId || !roomId) throw new Error("Event ID and Room ID are required.");
@@ -97,6 +128,12 @@ export const examinationRoomService = {
     }
   },
 
+  /**
+   * Définit un superviseur pour une salle d'examen
+   * @param {string} examinationRoomId - Identifiant de la salle d'examen
+   * @param {string} supervisorAcro - Acronyme du superviseur
+   * @returns {Promise<Object>} Salle mise à jour
+   */
   async setSupervisor(examinationRoomId, supervisorAcro) {
     try {
       if (!examinationRoomId || !supervisorAcro) throw new Error("Examination Room ID and Supervisor are required.");
@@ -113,6 +150,11 @@ export const examinationRoomService = {
     }
   },
 
+  /**
+   * Récupère le nombre de présences dans une salle
+   * @param {string} examinationRoomId - Identifiant de la salle d'examen
+   * @returns {Promise<number>} Nombre de présences
+   */
   async getPresenceCountForRoom(examinationRoomId) {
     try {
       if (!examinationRoomId) {
@@ -132,5 +174,5 @@ export const examinationRoomService = {
       console.error('Error fetching presence count:', error.message);
       return 0;
     }
-  }
+  },
 };

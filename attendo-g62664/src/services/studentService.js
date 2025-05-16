@@ -1,6 +1,13 @@
 import { supabase } from "./supabase";
 
+/**
+ * Service de gestion des étudiants
+ */
 export const studentService = {
+  /**
+   * Récupère tous les étudiants
+   * @returns {Promise<Array>} Liste des étudiants
+   */
   async getAll() {
     try {
       const { data, error } = await supabase
@@ -16,6 +23,11 @@ export const studentService = {
     }
   },
 
+  /**
+   * Récupère les étudiants inscrits à une UE
+   * @param {string} ueId - Identifiant de l'UE
+   * @returns {Promise<Array>} Liste des étudiants
+   */
   async getForUe(ueId) {
     try {
       if (!ueId) throw new Error('UE ID is required');
@@ -34,6 +46,11 @@ export const studentService = {
     }
   },
 
+  /**
+   * Récupère les étudiants présents dans une salle d'examen
+   * @param {string} examinationRoomId - Identifiant de la salle d'examen
+   * @returns {Promise<Array>} Liste des étudiants présents
+   */
   async getPresentForExaminationRoom(examinationRoomId) {
     try {
       if (!examinationRoomId) throw new Error('Examination Room ID is required');
@@ -52,6 +69,13 @@ export const studentService = {
     }
   },
 
+  /**
+   * Bascule la présence d'un étudiant dans une salle d'examen
+   * @param {string} studentId - Identifiant de l'étudiant
+   * @param {string} examinationRoomId - Identifiant de la salle d'examen
+   * @param {string} eventId - Identifiant de l'événement
+   * @returns {Promise<boolean>} true si l'étudiant est marqué présent, false sinon
+   */
   async togglePresence(studentId, examinationRoomId, eventId) {
     try {
       if (!studentId || !examinationRoomId || !eventId) throw new Error("Student ID, Examination Room ID, and Event ID are required.");
@@ -74,7 +98,7 @@ export const studentService = {
       console.log('Existing exams for student', studentId, ':', existingExam);
 
       // Vérifier si l'étudiant est présent dans une autre salle pour cet événement
-      const isPresentInOtherRoom = existingExam.some(exam => 
+      const isPresentInOtherRoom = existingExam.some(exam =>
         exam.examination_room && exam.examination_room.id !== examinationRoomId
       );
       if (isPresentInOtherRoom) {

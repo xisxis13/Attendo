@@ -1,6 +1,13 @@
 import { supabase } from "./supabase";
 
+/**
+ * Service de gestion des sessions d'examen
+ */
 export const sessionsService = {
+  /**
+   * Récupère toutes les sessions
+   * @returns {Promise<Array>} Liste des sessions
+   */
   async getAll() {
     try {
       const { data, error } = await supabase
@@ -16,6 +23,11 @@ export const sessionsService = {
     }
   },
 
+  /**
+   * Récupère une session par son identifiant
+   * @param {string} sessionId - Identifiant de la session
+   * @returns {Promise<Object>} Données de la session
+   */
   async getById(sessionId) {
     try {
       if (!sessionId) throw new Error('Session ID is required');
@@ -35,6 +47,11 @@ export const sessionsService = {
     }
   },
 
+  /**
+   * Crée une nouvelle session
+   * @param {string} label - Libellé de la session
+   * @returns {Promise<Object>} Session créée
+   */
   async create(label) {
     try {
       if (!label) throw new Error('Session label is required');
@@ -52,6 +69,11 @@ export const sessionsService = {
     }
   },
 
+  /**
+   * Supprime une session
+   * @param {string} sessionId - Identifiant de la session
+   * @returns {Promise<boolean>} true si la suppression a réussi
+   */
   async delete(sessionId) {
     try {
       if (!sessionId) throw new Error(`Session ID is required`);
@@ -68,66 +90,4 @@ export const sessionsService = {
       throw error;
     }
   },
-
-  // async getAllSessions() {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('session')
-  //       .select('*')
-
-  //     if (error) throw error;
-  //     return data;
-  //   } catch (error) {
-  //     console.error('Error fetching sessions from database: ', error.message);
-  //     return [];
-  //   }
-  // },
-  
-  // async getSessionById(sessionId) {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('session')
-  //       .select('*')
-  //       .eq('id', sessionId)
-  //       .single();
-  
-  //     if (error) throw error;
-  //     return data;
-  //   } catch (error) {
-  //     console.error('Error fetching session by ID:', error.message);
-  //     return null;
-  //   }
-  // },
-
-  // async createSession(sessionName) {
-  //   try {
-  //     if (sessionName === null) return null;
-
-  //     const { data, error } = await supabase
-  //       .from('session')
-  //       .insert([{ label: sessionName }])
-  //       .select();
-
-  //     if (error) throw error;
-  //     return data[0];
-  //   } catch (error) {
-  //     console.error('Error creating new session: ', error.message);
-  //     return null;
-  //   }
-  // },
-
-  // async deleteSession(sessionId) {
-  //   try {
-  //     const { error } = await supabase
-  //       .from('session')
-  //       .delete()
-  //       .eq('id', sessionId);
-
-  //     if (error) throw error;
-  //     return true;
-  //   } catch (error) {
-  //     console.error('Error deleting session: ', error.message);
-  //     return false;
-  //   }
-  // }
-}
+};

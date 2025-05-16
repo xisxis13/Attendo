@@ -1,6 +1,13 @@
 import { supabase } from "./supabase";
 
+/**
+ * Service de gestion des Unités d'Enseignement (UE)
+ */
 export const ueService = {
+   /**
+   * Récupère toutes les UEs
+   * @returns {Promise<Array>} Liste des UEs
+   */
   async getAll() {
     try {
       const { data, error } = await supabase
@@ -15,6 +22,11 @@ export const ueService = {
     }
   },
 
+  /**
+   * Récupère les UEs disponibles pour une session
+   * @param {string} sessionId - Identifiant de la session
+   * @returns {Promise<Array>} Liste des UEs disponibles
+   */
   async getAvailableForSession(sessionId) {
     try {
       if (!sessionId) throw new Error('Session ID is required');
@@ -42,6 +54,11 @@ export const ueService = {
     }
   },
 
+  /**
+   * Récupère les UEs associées à une session
+   * @param {string} sessionId - Identifiant de la session
+   * @returns {Promise<Array>} Liste des UEs associées
+   */
   async getAssociatedToSession(sessionId) {
     try {
       if (!sessionId) throw new Error('Session ID is required');
@@ -60,6 +77,12 @@ export const ueService = {
     }
   },
 
+  /**
+   * Associe une UE à une session
+   * @param {string} ueId - Identifiant de l'UE
+   * @param {string} sessionId - Identifiant de la session
+   * @returns {Promise<Object>} Association créée
+   */
   async associateToSession(ueId, sessionId) {
     try {
       if (!ueId || !sessionId) throw new Error('UE ID and Session ID are required');
@@ -78,6 +101,12 @@ export const ueService = {
     }
   },
 
+  /**
+   * Dissocie une UE d'une session
+   * @param {string} ueId - Identifiant de l'UE
+   * @param {string} sessionId - Identifiant de la session
+   * @returns {Promise<boolean>} true si la dissociation a réussi
+   */
   async dissociateFromSession(ueId, sessionId) {
     try {
       if (!ueId || !sessionId) throw new Error('UE ID and Session ID are required');
@@ -97,6 +126,12 @@ export const ueService = {
     }
   },
 
+  /**
+   * Récupère l'ID de la composition de session
+   * @param {string} ueId - Identifiant de l'UE
+   * @param {string} sessionId - Identifiant de la session
+   * @returns {Promise<string>} ID de la composition
+   */
   async getSessionCompoId(ueId, sessionId) {
     try {
       if (!ueId || !sessionId) throw new Error('UE ID and Session ID are required');
@@ -116,138 +151,4 @@ export const ueService = {
       throw error;
     }
   },
-
-  // async getAllUe() {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('ue')
-  //       .select('*');
-  //     if (error) throw error;
-      
-  //     return data;
-  //   } catch (error) {
-  //     console.error('Error fetching ues from database:', error.message);
-  //     return [];
-  //   }
-  // },
-
-  // async getAvailabledUe(sessionId) {
-  //   try {
-  //     const allUes = await this.getAllUe();
-  //     if (!allUes || allUes.length === 0) {
-  //       return []; 
-  //     }
-
-  //     const { data: associatedUes, error: compoError } = await supabase
-  //       .from('session_compo')
-  //       .select('ue')
-  //       .eq('session', sessionId);
-
-  //     if (compoError) throw compoError;
-
-  //     const associatedUeIds = associatedUes.map(item => item.ue);
-  //     const availableUes = allUes.filter(ue => !associatedUeIds.includes(ue.ue));
-
-  //     return availableUes;
-  //   } catch (error) {
-  //     console.error('Error fetching not associated ues:', error.message);
-  //     return [];
-  //   }
-  // },
-
-  // async isAssociatedToSession(ue, sessionId) {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('session_compo')
-  //       .select('*')
-  //       .eq('ue', ue)
-  //       .eq('session', sessionId)
-  //       .single();
-
-  //     if (error && error.code !== 'PGRST116') throw error;
-  //     return data !== null;
-  //   } catch (error) {
-  //     console.error('Error checking if ue is associated with session:', error.message);
-  //     return false;
-  //   }
-  // },
-
-  // async getSessionCompoId(ue, sessionId) {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('session_compo')
-  //       .select('*')
-  //       .eq('ue', ue)
-  //       .eq('session', sessionId)
-  //       .single();
-
-  //     if (error && error.code !== 'PGRST116') throw error;
-  //     return data;
-  //   } catch (error) {
-  //     console.error('Error fetching session compo:', error.message);
-  //     return [];
-  //   }
-  // },
-
-  // async fetchAssociatedUe(sessionId) {
-  //   try {
-  //     const { data: sessionCompos, error } = await supabase
-  //     .from('session_compo')
-  //     .select('ue')
-  //     .eq('session', sessionId);
-
-  //     if (error) throw error;
-      
-  //     if (!sessionCompos || sessionCompos.length === 0) {
-  //     return [];
-  //     }
-      
-  //     const ueIds = sessionCompos.map(compo => compo.ue);
-      
-  //     const { data: associatedUes, error: ueError } = await supabase
-  //       .from('ue')
-  //       .select('*')
-  //       .in('ue', ueIds);
-      
-  //     if (ueError) throw ueError;
-      
-  //     return associatedUes || [];
-  //   } catch (error) {
-  //     console.error('Error fetching associated UEs:', error.message);
-  //     return [];
-  //   }
-  // },
-
-  // async associateUeToSession(ue, sessionId) {
-  //   try {
-  //     if (!ue || !sessionId) return null;
-
-  //     const { data, error } = await supabase
-  //       .from('session_compo')
-  //       .insert([{ ue: ue, session: sessionId }])
-  //       .select();
-
-  //     if (error) throw error;
-  //     return data[0];
-  //   } catch (error) {
-  //     console.error('Error associating ue to session:', error.message);
-  //     return null;
-  //   }
-  // },
-
-  // async deleteAssociation(ue, sessionId) {
-  //   try {
-  //     const { error } = await supabase
-  //       .from('session_compo')
-  //       .delete()
-  //       .eq('ue', ue)
-  //       .eq('session', sessionId);
-
-  //     if (error) throw error;
-  //     return true;
-  //   } catch (error) {
-  //     console.error('Error deleting association:', error.message);
-  //     return false;
-  //   }
-  // },
 };

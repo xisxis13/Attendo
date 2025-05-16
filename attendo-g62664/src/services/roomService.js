@@ -1,6 +1,13 @@
 import { supabase } from "./supabase";
 
+/**
+ * Service de gestion des salles
+ */
 export const roomService = {
+  /**
+   * Récupère toutes les salles
+   * @returns {Promise<Array>} Liste des salles
+   */
   async getAll() {
     try {
       const { data, error } = await supabase
@@ -8,7 +15,7 @@ export const roomService = {
         .select('*');
 
       if (error) throw new Error(`Error fetching rooms: ${error.message}`);
-      
+
       return data || [];
     } catch (error) {
       console.error(error.message);
@@ -16,10 +23,15 @@ export const roomService = {
     }
   },
 
+  /**
+   * Récupère une salle par son identifiant
+   * @param {string} roomId - Identifiant de la salle
+   * @returns {Promise<Object>} Données de la salle
+   */
   async getById(roomId) {
     try {
       if (!roomId) throw new Error('Room ID is required');
-      
+
       const { data, error } = await supabase
         .from('room')
         .select('*')
@@ -27,41 +39,11 @@ export const roomService = {
         .single();
 
       if (error) throw new Error(`Error fetching room (${roomId}): ${error.message}`);
-      
+
       return data || null;
     } catch (error) {
       console.error(error.message);
       throw error;
     }
   },
-
-  // async getAllRooms() {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('room')
-  //       .select('*');
-
-  //     if (error) throw error;
-  //     return data || [];
-  //   } catch (error) {
-  //     console.error('Error fetching rooms:', error);
-  //     return [];
-  //   }
-  // },
-
-  // async getRoomById(roomId) {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('room')
-  //       .select('*')
-  //       .eq('label', roomId)
-  //       .single();
-
-  //     if (error) throw error;
-  //     return data || null;
-  //   } catch (error) {
-  //     console.error('Error fetching room by ID:', error);
-  //     return null;
-  //   }
-  // },
 };

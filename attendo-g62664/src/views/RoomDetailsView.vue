@@ -8,7 +8,7 @@ import { ref, computed, onMounted } from 'vue';
 import { eventService } from '@/services/eventService';
 import { roomService } from '@/services/roomService';
 import { examinationRoomService } from '@/services/examinationRoomService';
-import { studentService } from '@/services/sudentService';
+import { studentService } from '@/services/studentService';
 import { teacherService } from '@/services/teacherService';
 
 export default {

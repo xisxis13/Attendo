@@ -1,6 +1,13 @@
 import { supabase } from "./supabase";
 
+/**
+ * Service de gestion des enseignants
+ */
 export const teacherService = {
+  /**
+   * Récupère tous les enseignants
+   * @returns {Promise<Array>} Liste des enseignants
+   */
   async getAll() {
     try {
       const { data, error } = await supabase
@@ -8,7 +15,7 @@ export const teacherService = {
         .select('*');
 
       if (error) throw new Error(`Error fetching teachers: ${error.message}`);
-      
+
       return data || [];
     } catch (error) {
       console.error(error);
@@ -16,10 +23,15 @@ export const teacherService = {
     }
   },
 
+  /**
+   * Récupère un enseignant par son identifiant
+   * @param {string} teacherId - Identifiant de l'enseignant
+   * @returns {Promise<Object>} Données de l'enseignant
+   */
   async getById(teacherId) {
     try {
       if (!teacherId) throw new Error('Teacher ID is required');
-            
+
       const { data, error } = await supabase
         .from('teacher')
         .select('*')
@@ -27,7 +39,7 @@ export const teacherService = {
         .single();
 
       if (error) throw new Error(`Error fetching teacher (${teacherId}): ${error.message}`);
-      
+
       return data || null;
     } catch (error) {
       console.error(error);
@@ -35,14 +47,18 @@ export const teacherService = {
     }
   },
 
+  /**
+   * Récupère les superviseurs disponibles
+   * @returns {Promise<Array>} Liste des enseignants disponibles comme superviseurs
+   */
   async getAvailableSupervisors() {
-    try {            
+    try {
       const { data: allTeachers, error: teacherError } = await supabase
         .from('teacher')
         .select('*');
 
       if (teacherError) throw new Error(`Error fetching teachers: ${teacherError.message}`);
-      
+
       const { data: assignedSupervisors, error: supervisorError } = await supabase
         .from('examination_room')
         .select('supervisor')
@@ -59,34 +75,4 @@ export const teacherService = {
       throw error;
     }
   },
-
-  // async getAllTeachers() {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('teacher')
-  //       .select('*');
-
-  //     if (error) throw error;
-  //     return data || [];
-  //   } catch (error) {
-  //     console.error('Error fetching teachers:', error);
-  //     return [];
-  //   }
-  // },
-
-  // async getRoomById(teacherId) {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('teacher')
-  //       .select('*')
-  //       .eq('acro', teacherId)
-  //       .single();
-
-  //     if (error) throw error;
-  //     return data || null;
-  //   } catch (error) {
-  //     console.error('Error fetching teacher by ID:', error);
-  //     return null;
-  //   }
-  // },
 };

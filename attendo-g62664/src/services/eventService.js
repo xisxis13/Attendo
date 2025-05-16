@@ -1,7 +1,16 @@
 import { supabase } from "./supabase";
 import { ueService } from "./ueService";
 
+/**
+ * Service de gestion des épreuves d'examen
+ */
 export const eventService = {
+  /**
+   * Récuèpre toutes les épreuves pour une UE et une session données
+   * @param {String} ueId - Identifiant de l'UE
+   * @param {String} sessionId - Identifiant de la session
+   * @returns {Promise<Array>} Liste des épreuves
+   */
   async getAllForUeAndSession(ueId, sessionId) {
     try {
       if (!ueId || !sessionId) throw new Error('UE ID and Session ID are required');
@@ -24,6 +33,11 @@ export const eventService = {
     }
   },
 
+  /**
+   * Récupère une épreuve par son identifiant
+   * @param {string} eventId - Identifiant de l'épreuve
+   * @returns {Promise<Object>} Données de l'épreuve
+   */
   async getById(eventId) {
     try {
       if (!eventId) throw new Error('Event ID is required');
@@ -43,6 +57,11 @@ export const eventService = {
     }
   },
 
+  /**
+   * Crée une nouvelle épreuve
+   * @param {Object} eventData - Données de l'épreuve (session_compo, label requis)
+   * @returns {Promise<Object>} Épreuve créé
+   */
   async create(eventData) {
     try {
       if (!eventData || !eventData.session_compo || !eventData.label) throw new Error('Event data is incomplete');
@@ -61,6 +80,11 @@ export const eventService = {
     }
   },
 
+  /**
+   * Supprime une épreuve
+   * @param {string} eventId - Identifiant de l'épreuve
+   * @returns {Promise<boolean>} true si la suppression a réussi
+   */
   async delete(eventId) {
     try {
       if (!eventId) throw new Error('Event ID is required');
@@ -78,78 +102,4 @@ export const eventService = {
       throw error;
     }
   },
-
-  // async getAllUeEvent(ue, sessionId) {
-  //   try {
-  //     const sessionCompo = await ueService.getSessionCompoId(ue, sessionId);
-  //     console.log("Session compo trouvé:", sessionCompo);
-  
-  //     if (!sessionCompo || !sessionCompo.id) {
-  //       console.error(`No session_compo found for UE ${ue} and session ${sessionId}`);
-  //       return [];
-  //     }
-  
-  //     const { data, error } = await supabase
-  //       .from('event')
-  //       .select('*')
-  //       .eq('session_compo', sessionCompo.id)
-  
-  //     if (error) {
-  //       console.error("Erreur de requête Supabase:", error);
-  //       throw error;
-  //     }
-      
-  //     console.log("Events récupérés:", data);
-  //     return data || [];
-  //   } catch (error) {
-  //     console.error('Error fetching events:', error.message);
-  //     return [];
-  //   }
-  // },
-
-  // async getEventById(eventId) {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('event')
-  //       .select('*')
-  //       .eq('id', eventId)
-  //       .single()
-
-  //     if (error) throw error;
-  //     return data;
-  //   } catch (error) {
-  //     console.error('Error fetching event by id:', error.message);
-  //     return null;
-  //   }
-  // },
-
-  // async createEvent(event) {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('event')
-  //       .insert([event])
-  //       .select()
-
-  //     if (error) throw error;
-  //     return data[0];
-  //   } catch (error) {
-  //     console.error('Error creating event:', error.message);
-  //     return null;
-  //   }
-  // },
-
-  // async deleteEvent(eventId) {
-  //   try {
-  //     const { error } = await supabase
-  //       .from('event')
-  //       .delete()
-  //       .eq('id', eventId);
-  
-  //     if (error) throw error;
-  //     return true;
-  //   } catch (error) {
-  //     console.error('Error deleting event:', error.message);
-  //     return false;
-  //   }
-  // },
 };
