@@ -40,8 +40,8 @@ Il faut avoir [Node.js](https://nodejs.org/) installé ainsi qu'un compte [Supab
 **1. Cloner le dépôt**
 
 ```bash
-git clone https://github.com/votre-pseudo/nom-du-depot.git
-cd nom-du-depot
+git clone https://github.com/xisxis13/Attendo.git
+cd Attendo/attendo-g62664
 ```
 
 **2. Installer les dépendances**
